@@ -925,6 +925,7 @@ const JOKERS={
   cavalry:{n:'Cavalry',r:1,c:5,g:'♞',d:'Yellow cards give you an extra knight move.'},
   zerohour:{n:'Small Change',r:1,c:4,g:'1$',d:'Your 1 cards pay $2.'},
   turncoat:{n:'Turncoat',r:1,c:4,g:'⇅',d:'Earn $5 every time the board flips.'},
+  grip:{n:'Iron Grip',r:3,c:8,g:'⇅✕',d:"Your opponent's Reverse cards fizzle: no swap, and they lose the turn."},
   clairvoyant:{n:'Clairvoyant',r:1,c:3,g:'◉',d:'See the next card in both decks.'},
   wildheart:{n:'Wild Heart',r:1,c:4,g:'✦',d:'Wild cards show 3 choices instead of 2.'},
   speedrun:{n:'Blitz',r:1,c:5,g:'»',d:'Unused turns pay $2 each instead of $1 (max $10).'},
@@ -1105,7 +1106,7 @@ function showRules(){
     <dt>${C({c:'r',k:'num',n:3})}</dt><dd><b>Number card (1–4).</b> Move that many <b>different</b> pieces, one move each. Most cards are 1s and 2s.</dd>
     <dt>${C({c:'y',k:'plus',n:2})}</dt><dd><b>+2 / +3 / +4.</b> Bring back up to that many of your captured pieces, to their starting squares. A queen counts as 2. Reviving is your whole turn. In check, a revive that blocks the check counts. With nothing useful to revive, it plays as a 1.</dd>
     <dt>${C({c:'g',k:'skip'})}</dt><dd><b>Skip.</b> Never goes in your hand: drawing one costs you that turn. In check, it's redrawn.</dd>
-    <dt>${C({c:'b',k:'rev'})}</dt><dd><b>Reverse.</b> The board spins and you go again: refill your hand and play another card.</dd>
+    <dt>${C({c:'b',k:'rev'})}</dt><dd><b>Reverse.</b> The board flips and the armies swap: you take your opponent's pieces and they take yours. Your old army was about to move, so your opponent moves next with it. Hold it in your hand and play it when you're losing. The computer can too.</dd>
     <dt>${C({c:'w',k:'wild'})}</dt><dd><b>Wild.</b> Turn over two cards from your deck and keep the one you want.</dd>
   </dl>
   <h3>Multi-move turns</h3>
@@ -1304,7 +1305,7 @@ function buildSide(p){
   const c=G.card[p]; if(c) $('.slot',el).appendChild(cardEl(c,'used-card'));
   renderHand(p);
 }
-function describeCard(c){ return c.k==='num'?(c.n===1?'One move':`${c.n} pieces, one move each`):c.k==='plus'?`Revive up to ${c.n} lost piece${c.n>1?'s':''}`:{skip:'Lose the turn',rev:'Board spins, go again',wild:'Pick one of two'}[c.k]; }
+function describeCard(c){ return c.k==='num'?(c.n===1?'One move':`${c.n} pieces, one move each`):c.k==='plus'?`Revive up to ${c.n} lost piece${c.n>1?'s':''}`:{skip:'Lose the turn',rev:'Board flips, armies swap',wild:'Pick one of two'}[c.k]; }
 function cardKey(c){ return c.k==='num'?'num'+c.n:c.k==='plus'?'plus'+c.n:c.k; }
 function sizeBoard(){
   const w=$('#board-wrap'); if(!w||!w.clientWidth) return;
@@ -1698,6 +1699,12 @@ async function playCard(p,i){
   await animateDraw(p,card,from); if(G!==g) return;
   resolveCard(p,card);
 }
+// how much the side to move wants to swap armies: great when clearly behind, terrible when ahead
+function revValue(p){
+  const e=evaluate(G.s);
+  if(G.mode==='campaign'&&p===1&&has('grip')) return -3;
+  return e<-250?8+(-e/300):e<-120?2:-4;
+}
 function aiChooseCard(p){
   const g=G, s=g.s, hand=g.hand[p], inC=inCheck(s,s.turn), lostV=g.lost[s.turn].reduce((t,e)=>t+PVAL[ptyp(e.c)],0)/100;
   let bi=0, bv=-1e9;
@@ -1706,7 +1713,7 @@ function aiChooseCard(p){
     if(!cardUsable(p,c)) v=-1e6;
     else if(c.k==='num') v=effN(p,c)+(inC?2:0);
     else if(c.k==='plus') v=lostV>=3?1.5+Math.min(lostV,c.n*3)/2:.3;
-    else if(c.k==='rev') v=hand.length>1?Math.max(1,...hand.filter((x,j)=>j!==i&&x.k==='num').map(x=>x.n))+.5:1.2;
+    else if(c.k==='rev') v=revValue(p);
     else v=2.2;
     if(v>bv){bv=v;bi=i;}
   });
@@ -1727,8 +1734,19 @@ function chooseCard(opts,p,ok){
   });
 }
 function aiPickWild(opts,ok){
-  const score=c=>c.k==='rev'?3:c.k==='plus'?(G.lost[G.s.turn].length?1.5+c.n*.5:.5):c.n;
+  const score=c=>c.k==='rev'?revValue(G.ctrl[G.s.turn]):c.k==='plus'?(G.lost[G.s.turn].length?1.5+c.n*.5:.5):c.n;
   let bi=ok.indexOf(true); opts.forEach((c,i)=>{ if(ok[i]&&score(c)>score(opts[bi])) bi=i; }); return bi;
+}
+async function flipBoard(){
+  const bd=$('#board');
+  bd.classList.add('flipping');
+  await sleep(1020);
+  G.ctrl=[G.ctrl[1],G.ctrl[0]];
+  bd.classList.add('notrans');
+  labelSquares(); renderAll();
+  bd.classList.remove('flipping');
+  void bd.offsetWidth;
+  bd.classList.remove('notrans');
 }
 async function spinBoard(){
   const bd=$('#board');
@@ -1757,10 +1775,18 @@ async function resolveCard(p,card){
   }
   if(card.k==='skip') return beginMoves(p,[{t:0}]);
   if(card.k==='rev'){
-    banner('Reverse','blue','The board spins. Go again.'); sfx.rev();
-    await spinBoard(); if(G!==g) return;
-    if(camp&&has('turncoat')&&you){ fireJoker('turncoat'); addMoney(5); }
-    return startTurn(true);
+    // armies swap; the side that was about to move now belongs to the other player, so they move next
+    if(camp&&p===1&&has('grip')){
+      fireJoker('grip','Fizzled'); stamp(p,'FIZZLED'); banner('Iron Grip','green','Their Reverse fizzles'); sfx.skip();
+      await sleep(1100); if(G!==g) return;
+      s.turn^=1; s.ep=-1; g.last=null; return nextTurn();
+    }
+    banner('Reverse','blue','The board flips. Armies swap.'); sfx.rev();
+    await sleep(450); if(G!==g) return;
+    await flipBoard(); if(G!==g) return;
+    if(camp&&has('turncoat')){ fireJoker('turncoat'); addMoney(5); }
+    await sleep(300);
+    return nextTurn();
   }
   if(card.k==='plus'){
     let n=card.n+(you&&card.e==='glass'?1:0);
