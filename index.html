@@ -60,8 +60,13 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .eyebrow{font:700 11px/1 var(--f-ui);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 
 /* ---------- pieces ---------- */
-.pw{fill:url(#gw);stroke:#241d18;stroke-width:3;stroke-linejoin:round;color:#241d18}
-.pb{fill:url(#gb);stroke:#d9b56b;stroke-width:2.6;stroke-linejoin:round;color:#d9b56b}
+.pw{fill:url(#gw);stroke:#3b3026;stroke-width:2.2;stroke-linejoin:round;color:#3b3026}
+.pb{fill:url(#gb);stroke:#d7b064;stroke-width:2;stroke-linejoin:round;color:#d7b064}
+/* 3D look: lathe shading (base), top light + bottom falloff (.vol), gloss band (.gl), floor shadow (.shd) */
+.pw .vol,.pb .vol{fill:url(#gtop);stroke:none;color:transparent}
+.pw .gl{fill:url(#gs);stroke:none;color:transparent}
+.pb .gl{fill:url(#gsb);stroke:none;color:transparent}
+.shd{fill:url(#gshd);stroke:none}
 
 /* ---------- board ---------- */
 .board-wrap{flex:1;min-height:0;display:grid;place-items:center;position:relative}
@@ -84,7 +89,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .sq.d .cf-l,.sq.d .cr-l{color:#ebe3d1}
 .pieces{position:absolute;inset:0;pointer-events:none}
 .pc{position:absolute;left:0;top:0;width:12.5%;height:12.5%;transition:transform .32s cubic-bezier(.3,.75,.2,1);will-change:transform;z-index:1}
-.pc svg{width:100%;height:100%;display:block;filter:drop-shadow(0 3px 2px rgba(0,0,0,.35));transition:transform .15s ease,opacity .3s}
+.pc svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 2px 1.5px rgba(0,0,0,.28));transition:transform .15s ease,opacity .3s}
 .pc.lift{z-index:3}
 .pc.lift svg{transform:translateY(-5%) scale(1.07)}
 .pc.drag{transition:none;z-index:6}
@@ -325,8 +330,12 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 <!--ARTIFACT-BODY-START-->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <linearGradient id="gw" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#fffdf5"/><stop offset=".6" stop-color="#efe6d3"/><stop offset="1" stop-color="#cdbf9f"/></linearGradient>
-    <linearGradient id="gb" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#565d74"/><stop offset=".5" stop-color="#20242f"/><stop offset="1" stop-color="#0a0b10"/></linearGradient>
+    <linearGradient id="gw" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9c8964"/><stop offset=".16" stop-color="#e6d9bd"/><stop offset=".34" stop-color="#fffdf7"/><stop offset=".58" stop-color="#f1e7d2"/><stop offset=".84" stop-color="#c7b48d"/><stop offset="1" stop-color="#8a7654"/></linearGradient>
+    <linearGradient id="gb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#020203"/><stop offset=".18" stop-color="#343a4a"/><stop offset=".34" stop-color="#6b7389"/><stop offset=".56" stop-color="#2a2f3c"/><stop offset=".84" stop-color="#101217"/><stop offset="1" stop-color="#000"/></linearGradient>
+    <linearGradient id="gs" x1="0" y1="0" x2="1" y2=".25"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".22" stop-color="#fff" stop-opacity="0"/><stop offset=".3" stop-color="#fff" stop-opacity=".9"/><stop offset=".38" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gsb" x1="0" y1="0" x2="1" y2=".25"><stop offset="0" stop-color="#cfd8ff" stop-opacity="0"/><stop offset=".22" stop-color="#cfd8ff" stop-opacity="0"/><stop offset=".3" stop-color="#e6ecff" stop-opacity=".55"/><stop offset=".38" stop-color="#cfd8ff" stop-opacity="0"/><stop offset="1" stop-color="#cfd8ff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gtop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>
+    <radialGradient id="gshd"><stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset=".6" stop-color="#000" stop-opacity=".2"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
     <symbol id="s-base" viewBox="0 0 100 100"><path d="M21 92 C21 84 26 79 34 79 H66 C74 79 79 84 79 92 Z"/></symbol>
     <symbol id="s-p" viewBox="0 0 100 100">
       <path d="M40 47 H60 C58 58 63 70 71 80 H29 C37 70 42 58 40 47 Z"/>
@@ -908,7 +917,7 @@ function renderTitle(){
   const fan=$('#fan');
   if(!fan.children.length){
     const cs=[{c:'r',k:'num',n:3},{c:'y',k:'plus',n:2},{c:'w',k:'plus',n:4},{c:'g',k:'skip'},{c:'b',k:'rev'}];
-    fan.innerHTML=cs.map((c,i)=>cardHTML(c)).join('')+'<svg class="king pw" viewBox="0 0 100 100"><use href="#s-k"/></svg>';
+    fan.innerHTML=cs.map((c,i)=>cardHTML(c)).join('')+pieceSVG(pc(WHITE,KING),{cls:'king'});
     $$('.card',fan).forEach((c,i)=>{const a=(i-2)*16; c.style.transform=`translateX(-50%) rotate(${a}deg) translateY(${Math.abs(i-2)*6}px)`; c.style.animationDelay=(i*.07)+'s'; c.style.zIndex=i;});
   }
   const menu=$('#title-menu'), saved=LS.get('wg.match',null);
@@ -943,13 +952,13 @@ function showRules(){
   <p>Standard chess: same pieces, same moves, checkmate wins. The twist: at the start of every turn you tap your deck and draw a card. The card decides your turn.</p>
   <dl>
     <dt>${C({c:'r',k:'num',n:3})}</dt><dd><b>Number card (1–4).</b> Move that many <b>different</b> pieces, one move each. Most cards are 1s and 2s.</dd>
-    <dt>${C({c:'y',k:'plus',n:2})}</dt><dd><b>+2 / +3 / +4.</b> Bring back up to that many of your captured pieces, to their starting squares. A queen counts as 2. Reviving is your whole turn. With nothing to revive, or while in check, it plays as a 1.</dd>
+    <dt>${C({c:'y',k:'plus',n:2})}</dt><dd><b>+2 / +3 / +4.</b> Bring back up to that many of your captured pieces, to their starting squares. A queen counts as 2. Reviving is your whole turn. In check, a revive that blocks the check counts. With nothing useful to revive, it plays as a 1.</dd>
     <dt>${C({c:'g',k:'skip'})}</dt><dd><b>Skip.</b> You lose your turn. If you're in check, you get one move instead.</dd>
     <dt>${C({c:'b',k:'rev'})}</dt><dd><b>Reverse.</b> The board flips. You and your opponent swap armies, and your opponent moves next with the side that was about to move.</dd>
     <dt>${C({c:'w',k:'wild'})}</dt><dd><b>Wild.</b> Turn over two cards from your deck and keep the one you want.</dd>
   </dl>
   <h3>Multi-move turns</h3>
-  <p>Each piece moves once per turn, and giving check ends your turn on the spot. After your first move you can end the turn early.</p>
+  <p>Each piece moves once per turn, and giving check ends your turn on the spot. Your king only has to be safe when your turn ends, so a 2 or 3 can get you out of a check one move can't. It's checkmate only when the card you drew can't save your king.</p>
   <h3>The run</h3>
   <p>Climb a ladder of 8 opponents. Each win pays cash plus $1 interest per $5 you hold (up to $5). Spend it in the Back Room on jokers that bend the rules, and on trimming or stacking your deck. Lose once and the run is over.</p>
   <div class="btns"><button class="btn" id="m-ok">Got it</button></div></div>`,{dismiss:true});
@@ -1123,7 +1132,7 @@ function buildSide(p){
     ${compact&&G.rule?`<span class="rulechip">${RULES[G.rule].n}</span>`:''}
     <div class="caps"></div><div class="status"></div><div class="row"><div class="pips"></div><button class="endturn" hidden>End turn</button></div></div>`;
   $('.deck',el).addEventListener('click',()=>{ if(G&&G.phase==='draw'&&G.ctrl[G.s.turn]===p&&!isAI(p)) drawCard(p); });
-  $('.endturn',el).addEventListener('click',()=>{ if(G&&G.phase==='move'&&G.ctrl[G.s.turn]===p&&G.slotIdx>0){ sfx.tap(); deselect(); endTurn(); } });
+  $('.endturn',el).addEventListener('click',()=>{ if(G&&G.phase==='move'&&G.ctrl[G.s.turn]===p&&G.slotIdx>0&&!inCheck(G.s,G.s.turn)){ sfx.tap(); deselect(); endTurn(); } });
   $('.slot',el).addEventListener('click',()=>{ const c=G&&G.card[p]; if(c){ banner(cardName(c),'nf',describeCard(c)); } });
   const c=G.card[p]; if(c) $('.slot',el).appendChild(cardEl(c,'used-card'));
 }
@@ -1150,6 +1159,10 @@ function labelSquares(){
   }
 }
 const SYM='pnbrqk';
+function pieceSVG(code,{shadow=true,cls=''}={}){
+  const k=SYM[ptyp(code)-1];
+  return `<svg viewBox="0 0 100 100" class="${pcol(code)===WHITE?'pw':'pb'} ${cls}">${shadow?'<ellipse class="shd" cx="50" cy="91" rx="33" ry="7"/>':''}<use href="#s-${k}"/><use class="vol" href="#s-${k}"/><use class="gl" href="#s-${k}"/></svg>`;
+}
 function renderPieces(){
   const g=G, s=g.s, layer=$('#pieces'), seen=new Set(), sl=g.slots[g.slotIdx], restricted=g.phase==='move'&&!isAI(g.ctrl[s.turn])&&sl&&sl.t;
   const movable=restricted?new Set(slotMoves().map(m=>m.f)):null;
@@ -1157,7 +1170,7 @@ function renderPieces(){
     const id=g.ids[sq]; if(!id) continue; seen.add(id);
     let el=PEL.get(id); const p=s.b[sq], sym=(pcol(p)===WHITE?'w':'b')+SYM[ptyp(p)-1];
     if(!el){el=document.createElement('div'); el.className='pc'; layer.appendChild(el); PEL.set(id,el);}
-    if(el.dataset.sym!==sym){ const was=el.dataset.sym; el.dataset.sym=sym; el.innerHTML=`<svg viewBox="0 0 100 100" class="${sym[0]==='w'?'pw':'pb'}"><use href="#s-${sym[1]}"/></svg>`; if(was){el.classList.remove('promo'); void el.offsetWidth; el.classList.add('promo');} }
+    if(el.dataset.sym!==sym){ const was=el.dataset.sym; el.dataset.sym=sym; el.innerHTML=pieceSVG(p); if(was){el.classList.remove('promo'); void el.offsetWidth; el.classList.add('promo');} }
     if(!el.classList.contains('drag')){ const [x,y]=vxy(sq); el.style.transform=`translate(${x*100}%,${y*100}%)`; }
     el.classList.toggle('used',g.phase==='move'&&g.used.includes(id));
     el.classList.toggle('hint',!!(movable&&movable.has(sq)));
@@ -1183,12 +1196,12 @@ function renderSides(){
     if(has('clairvoyant')){ const top=dk.draw[dk.draw.length-1]||dk.disc[0]; peek.innerHTML=top?`<i style="background:${CCOL[top.c]}"></i>${cardName(top)}`:''; } else peek.innerHTML='';
     const caps=g.caps[p].slice().sort((a,b)=>PVAL[ptyp(b)]-PVAL[ptyp(a)]);
     const mat=v=>g.caps[v].reduce((t,x)=>t+PVAL[ptyp(x)],0), adv=Math.round((mat(p)-mat(1-p))/100);
-    $('.caps',el).innerHTML=caps.map(x=>`<svg viewBox="0 0 100 100" class="${pcol(x)===WHITE?'pw':'pb'}"><use href="#s-${SYM[ptyp(x)-1]}"/></svg>`).join('')+(adv>0?`<span class="adv">+${adv}</span>`:'');
+    $('.caps',el).innerHTML=caps.map(x=>pieceSVG(x,{shadow:false})).join('')+(adv>0?`<span class="adv">+${adv}</span>`:'');
     const pips=$('.pips',el), et=$('.endturn',el);
     if(cur===p&&g.phase==='move'&&g.slots.length>1){
       pips.innerHTML=g.slots.map((sl,i)=>`<span class="pip ${i<g.slotIdx?'done':i===g.slotIdx?'cur':''}">${sl.t?(sl.t===PAWN?'♙':'♘'):i+1}</span>`).join('');
     } else pips.innerHTML='';
-    et.hidden=!(cur===p&&g.phase==='move'&&!isAI(p)&&g.slotIdx>0&&g.slotIdx<g.slots.length);
+    et.hidden=!(cur===p&&g.phase==='move'&&!isAI(p)&&g.slotIdx>0&&g.slotIdx<g.slots.length&&!inCheck(s,s.turn));
   }
 }
 function setStatus(p,html){ const el=sideEl(p); if(el) $('.status',el).innerHTML=html; }
@@ -1205,9 +1218,8 @@ async function startTurn(){
   const g=G; if(!g||g.over) return;
   const s=g.s, side=s.turn, p=g.ctrl[side];
   g.phase='draw'; g.slots=[]; g.slotIdx=0; g.used=[]; g.blood=false; g.cont=false; g.sel=null; g.targets=null;
-  const legal=legalMoves(s);
   renderAll();
-  if(!legal.length) return endMatch(inCheck(s,side)?1-p:-1,inCheck(s,side)?'mate':'stalemate');
+  // no mate check here: the card you draw decides whether you can escape
   if(insufficient(s.b)) return endMatch(-1,'material');
   if(p===0) g.myTurns++;
   saveMatch();
@@ -1334,23 +1346,31 @@ function reviveSquare(e,b){
   for(const r of ranks) for(let f=0;f<8;f++){ const q=r*8+f; if(b[q]) continue; const d=Math.abs(f-(e.sq&7))+Math.abs(r-(e.sq>>3))*.5; if(d<bd){bd=d;best=q} }
   return best;
 }
-function chooseRevive(p,lost,n){
+function chooseRevive(p,lost,n,inC){
   return new Promise(res=>{
     const order=lost.map((e,i)=>i).sort((a,b)=>PVAL[ptyp(lost[b].c)]-PVAL[ptyp(lost[a].c)]);
     const pick=new Set();
     const sh=openModal(`<p class="eyebrow">+${n} card</p><h2>Bring pieces back</h2><p>They return to their starting squares. A queen counts as 2.</p>
-      <div class="budget" id="rv-b"></div><div class="rv">${order.map(i=>{const e=lost[i];return `<button data-i="${i}" aria-label="${['','Pawn','Knight','Bishop','Rook','Queen'][ptyp(e.c)]}"><svg viewBox="0 0 100 100" class="${pcol(e.c)===WHITE?'pw':'pb'}"><use href="#s-${SYM[ptyp(e.c)-1]}"/></svg>${reviveCost(e)>1?'<i>2</i>':''}</button>`}).join('')}</div>
-      <div class="btns"><button class="btn" id="rv-go" disabled>Bring back</button></div>`,{flip:G.mode==='local'&&p===1});
+      <div class="budget" id="rv-b"></div><div class="rv">${order.map(i=>{const e=lost[i];return `<button data-i="${i}" aria-label="${['','Pawn','Knight','Bishop','Rook','Queen'][ptyp(e.c)]}">${pieceSVG(e.c)}${reviveCost(e)>1?'<i>2</i>':''}</button>`}).join('')}</div>
+      ${inC?'<p style="margin-top:12px">You\'re in check. Your picks must block it.</p>':''}
+      <div class="btns"><button class="btn" id="rv-go" disabled>Bring back</button>${inC&&legalMoves(G.s).length?'<button class="btn ghost" id="rv-move">Make one move instead</button>':''}</div>`,{flip:G.mode==='local'&&p===1});
     const upd=()=>{
       const used=[...pick].reduce((t,i)=>t+reviveCost(lost[i]),0);
       $('#rv-b',sh).textContent=`${n-used} of ${n} left`;
       $$('[data-i]',sh).forEach(b=>{const i=+b.dataset.i; b.classList.toggle('on',pick.has(i)); b.disabled=!pick.has(i)&&used+reviveCost(lost[i])>n;});
-      $('#rv-go',sh).disabled=!pick.size;
+      $('#rv-go',sh).disabled=!pick.size||(inC&&!safeAfter([...pick].map(i=>lost[i])));
     };
     $$('[data-i]',sh).forEach(b=>b.onclick=()=>{const i=+b.dataset.i; pick.has(i)?pick.delete(i):pick.add(i); sfx.tap(); upd();});
     $('#rv-go',sh).onclick=()=>{closeModal(); res([...pick]);};
+    if($('#rv-move',sh)) $('#rv-move',sh).onclick=()=>{closeModal(); res('move');};
     upd();
   });
+}
+// would reviving these (in order) leave the side to move's king safe?
+function safeAfter(entries){
+  const s=G.s, b=s.b.slice(), col=s.turn;
+  for(const e of entries){ const sq=reviveSquare(e,b); if(sq>=0) b[sq]=e.c; }
+  return !attacked(b,s.kings[col],col^1);
 }
 function aiRevive(lost,n){
   const out=[]; let left=n;
@@ -1359,16 +1379,26 @@ function aiRevive(lost,n){
 }
 async function revive(p,n){
   const g=G, s=g.s, col=s.turn, lost=g.lost[col], you=g.mode==='campaign'&&p===0;
-  const can=lost.some(e=>reviveSquare(e,s.b)>=0);
-  if(!can||inCheck(s,col)){
-    banner('+'+n,'gold',inCheck(s,col)?'In check: one move instead':'Nothing to revive: one move');
+  const inC=inCheck(s,col);
+  const blocks=i=>safeAfter([lost[i]]);
+  const can=inC?lost.some((e,i)=>blocks(i)):lost.some(e=>reviveSquare(e,s.b)>=0);
+  if(!can){
+    banner('+'+n,'gold',inC?'No revive blocks the check: one move':'Nothing to revive: one move');
     await sleep(900); if(G!==g) return;
     return beginMoves(p,[{t:0}]);
   }
-  banner('+'+n,'gold',`Revive up to ${n}`); sfx.plus();
+  banner('+'+n,'gold',inC?'Revive a piece to block the check':`Revive up to ${n}`); sfx.plus();
   await sleep(isAI(p)?900:500); if(G!==g) return;
-  const picks=isAI(p)?aiRevive(lost,n):await chooseRevive(p,lost,n);
+  let picks;
+  if(isAI(p)){
+    if(inC){ const bl=lost.map((e,i)=>i).filter(blocks).sort((a,b)=>PVAL[ptyp(lost[b].c)]-PVAL[ptyp(lost[a].c)]).filter(i=>reviveCost(lost[i])<=n)[0];
+      picks=bl===undefined?[]:[bl]; let left=n-(bl===undefined?0:reviveCost(lost[bl]));
+      for(const i of aiRevive(lost,n)) if(i!==bl&&reviveCost(lost[i])<=left){picks.push(i); left-=reviveCost(lost[i]);} }
+    else picks=aiRevive(lost,n);
+    if(!picks.length) return beginMoves(p,[{t:0}]);
+  } else picks=await chooseRevive(p,lost,n,inC);
   if(G!==g) return;
+  if(picks==='move') return beginMoves(p,[{t:0}]);
   const entries=picks.map(i=>lost[i]);
   for(const e of entries){
     const sq=reviveSquare(e,s.b); if(sq<0) continue;
@@ -1385,21 +1415,52 @@ async function revive(p,n){
   if(inCheck(s,s.turn)){ banner('Check','red'); sfx.check(); await sleep(500); }
   nextTurn();
 }
+/* Your king only has to be safe when your turn ends. A move that leaves it attacked is allowed
+   if the moves still left on your card can fix that (a move giving check ends the turn, so it must be safe). */
+function canFinish(s,slots,i,usedSq,depth){
+  if(i>=slots.length||depth<=0) return false;
+  const us=s.turn, sl=slots[i];
+  for(const m of gen(s,false)){
+    if(usedSq.includes(m.f)||(sl.t&&ptyp(s.b[m.f])!==sl.t)) continue;
+    if(s.b[m.t]&&ptyp(s.b[m.t])===KING) continue;
+    const u=make(s,m);
+    let ok=!attacked(s.b,s.kings[us],us^1);
+    if(!ok&&!inCheck(s,s.turn)){ s.turn=us; s.ep=-1; ok=canFinish(s,slots,i+1,usedSq.concat(m.t),depth-1); s.turn=us^1; }
+    unmake(s,m,u);
+    if(ok) return true;
+  }
+  return false;
+}
+let SM_KEY='', SM_VAL=[];
 function slotMoves(){
   const g=G, s=g.s, sl=g.slots[g.slotIdx]; if(!sl) return [];
-  return legalMoves(s).filter(m=>!g.used.includes(g.ids[m.f])&&(!sl.t||ptyp(s.b[m.f])===sl.t));
+  const key=s.b.join()+'|'+s.turn+'|'+s.ep+'|'+s.castle+'|'+g.slotIdx+'|'+g.slots.length+'|'+g.used.join();
+  if(key===SM_KEY) return SM_VAL;
+  const us=s.turn, usedSq=[], out=[];
+  for(let q=0;q<64;q++) if(g.ids[q]&&g.used.includes(g.ids[q])) usedSq.push(q);
+  for(const m of gen(s,false)){
+    if(usedSq.includes(m.f)||(sl.t&&ptyp(s.b[m.f])!==sl.t)) continue;
+    if(s.b[m.t]&&ptyp(s.b[m.t])===KING) continue;
+    const u=make(s,m);
+    let ok=!attacked(s.b,s.kings[us],us^1);
+    if(!ok&&!inCheck(s,s.turn)){ s.turn=us; s.ep=-1; ok=canFinish(s,g.slots,g.slotIdx+1,usedSq.concat(m.t),3); s.turn=us^1; }
+    unmake(s,m,u);
+    if(ok) out.push(m);
+  }
+  SM_KEY=key; SM_VAL=out; return out;
 }
 function seekSlot(){ while(G.slotIdx<G.slots.length){ if(slotMoves().length) return true; G.slotIdx++; } return false; }
 function beginMoves(p,slots){
   const g=G; g.phase='move'; g.slots=slots; g.slotIdx=0; g.used=[]; g.cont=false;
-  if(!seekSlot()) return endTurn();
+  if(!seekSlot()){ const inC=inCheck(g.s,g.s.turn); return endMatch(inC?1-p:-1,inC?'mate':'stalemate'); }
   saveMatch(); renderAll();
   if(isAI(p)) aiPlay(); else humanPrompt();
 }
 function humanPrompt(){
   const g=G, p=g.ctrl[g.s.turn], sl=g.slots[g.slotIdx], tot=g.slots.length;
   const what=sl.t===PAWN?'a pawn':sl.t===KNIGHT?'a knight':g.slotIdx?'a different piece':'any piece';
-  setStatus(p,tot>1?`Move <em>${g.slotIdx+1} of ${tot}</em>: ${what}`:`Make your move`);
+  const chk=inCheck(g.s,g.s.turn)?'<em>Check!</em> ':'';
+  setStatus(p,chk+(tot>1?`Move <em>${g.slotIdx+1} of ${tot}</em>: ${chk?'get your king safe':what}`:chk?'Get out of check':'Make your move'));
   renderSides(); renderPieces();
 }
 async function afterMove(p,res){
@@ -1443,10 +1504,15 @@ function nextTurn(){
 async function aiPlay(){
   const g=G, L=LEVELS[g.lvl];
   for(let guard=0;guard<8;guard++){
-    const moves=slotMoves(); if(!moves.length) break;
+    let moves=slotMoves(); if(!moves.length) break;
+    let forced=null;
+    if(inCheck(g.s,g.s.turn)){
+      const single=new Set(legalMoves(g.s).map(m=>m.f+','+m.t+','+m.pr)), direct=moves.filter(m=>single.has(m.f+','+m.t+','+m.pr));
+      if(direct.length) moves=direct; else forced=moves[0];
+    }
     setStatus(1,g.slots.length>1?`Thinking · move ${g.slotIdx+1} of ${g.slots.length}`:'Thinking…');
     const t0=performance.now();
-    const m=await aiThink(g.s,moves,L.depth,L.noise,L.ms);
+    const m=forced||await aiThink(g.s,moves,L.depth,L.noise,L.ms);
     if(G!==g||g.over) return;
     const wait=Math.max(0,420-(performance.now()-t0)); if(wait) await sleep(wait);
     if(G!==g) return;
@@ -1539,7 +1605,7 @@ board.addEventListener('pointercancel',e=>endDrag(e,true));
 function promoPick(color,p){
   return new Promise(res=>{
     const cls=color===WHITE?'pw':'pb', types=[QUEEN,ROOK,BISHOP,KNIGHT];
-    const sh=openModal(`<p class="eyebrow">Promotion</p><h2>Choose a piece</h2><div class="promo">${types.map(t=>`<button data-t="${t}" aria-label="${['','','Knight','Bishop','Rook','Queen'][t]}"><svg viewBox="0 0 100 100" class="${cls}"><use href="#s-${SYM[t-1]}"/></svg></button>`).join('')}</div>`,{flip:G.mode==='local'&&p===1});
+    const sh=openModal(`<p class="eyebrow">Promotion</p><h2>Choose a piece</h2><div class="promo">${types.map(t=>`<button data-t="${t}" aria-label="${['','','Knight','Bishop','Rook','Queen'][t]}">${pieceSVG(pc(color,t))}</button>`).join('')}</div>`,{flip:G.mode==='local'&&p===1});
     $$('[data-t]',sh).forEach(b=>b.onclick=()=>{closeModal(); res(+b.dataset.t)});
   });
 }

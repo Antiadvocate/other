@@ -14,7 +14,7 @@ Open `index.html` in Safari (or host it anywhere, e.g. GitHub Pages) and use Sha
 | Reverse | The board flips: players swap armies, and the opponent moves next with the side that was to move |
 | Wild | Turn over two cards and keep one |
 
-Chess rules are standard (castling, en passant, promotion, checkmate, stalemate). Each piece moves at most once per turn, and giving check ends the turn.
+Chess rules are standard (castling, en passant, promotion, checkmate, stalemate). Each piece moves at most once per turn, and giving check ends the turn. Your king only has to be safe when your turn ends, so checkmate is decided after the draw: you lose only if the card you drew can't get your king out of check.
 
 ## Modes
 
