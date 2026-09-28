@@ -26,6 +26,7 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:var(--f-ui);overscroll-behavior:none}
 body{overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;-webkit-font-smoothing:antialiased}
 button{font-family:inherit;color:inherit;cursor:pointer}
@@ -395,6 +396,56 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   .hand .card+.card{margin-left:-14px}
   .side .line .status{font-size:12px}
 }
+
+/* ---------- enhancements, tricks, packs ---------- */
+.card .eb{position:absolute;right:7%;top:6%;font:900 calc(var(--w)*.17)/1 var(--f-display);font-style:normal;color:#fff;background:rgba(0,0,0,.35);border-radius:40%;padding:2px 3px;z-index:2}
+.card[class*="e-"] .cf::before{content:'';position:absolute;inset:-40%;z-index:1;pointer-events:none;background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.55) 50%,transparent 58%);animation:sheen 3.2s ease-in-out infinite}
+@keyframes sheen{0%{transform:translateX(-60%)}55%,100%{transform:translateX(60%)}}
+.e-gold .cf{box-shadow:inset 0 0 0 calc(var(--w)*.07) #f3c65a,inset 0 0 0 calc(var(--w)*.1) #a5781f,0 0 16px rgba(243,198,90,.45),0 8px 18px rgba(0,0,0,.5)}
+.e-gold .eb{background:#c8931f}
+.e-glass .cf{opacity:.8;box-shadow:inset 0 0 0 calc(var(--w)*.06) #d9f1ff,0 0 14px rgba(160,220,255,.5),0 8px 18px rgba(0,0,0,.4)}
+.e-glass .gem{background:rgba(251,248,240,.75)}
+.e-glass .eb{background:#5fb4e8}
+.e-steel .cf{box-shadow:inset 0 0 0 calc(var(--w)*.07) #c9d2e0,inset 0 0 0 calc(var(--w)*.1) #6f7a8c,0 8px 18px rgba(0,0,0,.5)}
+.e-steel .cf::after{background:repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 2px,transparent 2px 4px),linear-gradient(140deg,rgba(255,255,255,.3),transparent 40%,rgba(0,0,0,.2))}
+.e-steel .eb{background:#6f7a8c}
+.e-lucky .cf{box-shadow:inset 0 0 0 calc(var(--w)*.07) #7ff0bd,0 0 14px rgba(31,184,119,.5),0 8px 18px rgba(0,0,0,.5)}
+.e-lucky .eb{background:#1fb877}
+.card.shatter{animation:shatter .6s ease-in forwards}
+@keyframes shatter{30%{transform:scale(1.08) rotate(3deg);filter:brightness(1.8)}100%{transform:scale(.6) rotate(-10deg);opacity:0;filter:blur(3px)}}
+.tsep{flex:none;width:1px;align-self:stretch;margin:6px 2px;background:var(--line)}
+.tk{--tc:#c455e0;flex:none;width:58px;height:60px;border-radius:30px 30px 12px 12px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;
+  background:radial-gradient(circle at 50% 30%,rgba(196,85,224,.45),transparent 70%),#1d1433;box-shadow:inset 0 0 0 1.5px var(--tc),0 6px 14px rgba(0,0,0,.4);animation:sway 4.2s ease-in-out infinite;animation-delay:calc(var(--d,0s)*-1)}
+.tk.shop{--tc:#f0c060;background:radial-gradient(circle at 50% 30%,rgba(240,192,96,.35),transparent 70%),#221b12}
+.tk .jg{font:900 16px/1 var(--f-display);color:#fff;text-shadow:0 0 12px var(--tc)}
+.tk .jn{font:700 7px/1.05 var(--f-ui);text-align:center;color:var(--dim);text-transform:uppercase;letter-spacing:-.02em;padding:0 3px}
+.tk.big,.jk.big{width:84px;height:92px}
+.tk.big .jg,.jk.big .jg{font-size:24px}
+.tk.big .jn,.jk.big .jn{font-size:9px}
+.choice .opt.on .card,.choice .opt.on .tk,.choice .opt.on .jk{outline:3px solid var(--gold);outline-offset:3px;border-radius:14px}
+.choice .opt.off{opacity:.35}
+.packs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.packslot{display:flex;gap:10px;align-items:center;padding:10px;border-radius:16px;background:rgba(255,255,255,.045);box-shadow:inset 0 0 0 1px var(--line);min-width:0}
+.packslot span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.packslot b{font:700 12px/1.15 var(--f-display)}
+.packslot small{font:600 11px/1.25 var(--f-ui);color:var(--dim)}
+.packslot .btn{align-self:flex-start;margin-top:2px}
+.packslot.sold{opacity:.4}
+.pack{--p1:#6d3cff;--p2:#e0409a;flex:none;width:52px;height:72px;border-radius:9px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  background:linear-gradient(150deg,var(--p1),var(--p2));box-shadow:inset 0 0 0 2px rgba(255,255,255,.35),0 8px 18px rgba(0,0,0,.45);animation:sway 3.6s ease-in-out infinite}
+.pack::before{content:'';position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.6) 50%,transparent 60%);animation:sheen 2.6s ease-in-out infinite}
+.pack::after{content:'';position:absolute;left:0;right:0;top:12%;height:3px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.5) 0 4px,transparent 4px 8px)}
+.pack .pn{font:900 10px/1 var(--f-display);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.3);position:relative}
+.pack .pl{font:800 7px/1 var(--f-display);letter-spacing:.2em;color:rgba(255,255,255,.8);position:relative}
+.pk-card{--p1:#1f8fff;--p2:#1fb877}
+.pk-joker{--p1:#ef4455;--p2:#f5ae24}
+.pack.big{width:130px;height:180px;border-radius:16px;cursor:pointer}
+.pack.big .pn{font-size:22px}
+.pack.big .pl{font-size:12px}
+.pack-stage{display:grid;place-items:center;padding:18px 0}
+.pack.burst{animation:burst .45s cubic-bezier(.5,0,.8,.4) forwards}
+@keyframes burst{0%{transform:none}30%{transform:rotate(-6deg) scale(1.05)}50%{transform:rotate(6deg) scale(1.08)}100%{transform:scale(1.6);opacity:0;filter:brightness(2.5) blur(2px)}}
+@keyframes packin{from{opacity:0;transform:translateY(40px) scale(.6) rotate(-8deg)}}
 @media (max-height:700px){
   .side .slot{--cw:56px}
   .side .deck{--cw:46px}
@@ -505,10 +556,14 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       <div class="shop">
         <h3><span class="eyebrow">Jokers for sale</span><button class="btn ghost small" id="btn-reroll">Reroll $2</button></h3>
         <div class="offers" id="offers"></div>
+        <h3><span class="eyebrow">Booster packs</span></h3>
+        <div class="packs" id="packs"></div>
         <h3><span class="eyebrow">Deck work · one each per visit</span></h3>
         <div class="services" id="services"></div>
         <h3><span class="eyebrow" id="owned-lbl">Your jokers</span><span class="eyebrow">tap to sell</span></h3>
         <div class="owned" id="owned"></div>
+        <h3><span class="eyebrow" id="tricks-lbl">Your tricks</span><span class="eyebrow">tap to use or sell</span></h3>
+        <div class="owned" id="owned-tricks"></div>
       </div>
       <div class="cta"><button class="btn" id="btn-next">Next opponent</button></div>
     </div>
@@ -855,7 +910,7 @@ function cardHTML(c,cls=''){
     case 'wild': mid='<b class="sm">W</b>'; cor='W'; break;
     default: mid='<b class="sm">+4</b>'; cor='+4';
   }
-  return `<div class="card k-${c.k==='plus'&&c.c==='w'?'wild4':c.k} ${cls}" style="--cc:${CCOL[c.c]}"><div class="ci"><div class="cf"><i class="cor tl">${cor}</i><div class="gem">${mid}</div><i class="cor br">${cor}</i></div><div class="cb"><span>W</span></div></div></div>`;
+  return `<div class="card k-${c.k==='plus'&&c.c==='w'?'wild4':c.k} ${c.e?'e-'+c.e:''} ${cls}" style="--cc:${CCOL[c.c]}"><div class="ci"><div class="cf"><i class="cor tl">${cor}</i><div class="gem">${mid}</div><i class="cor br">${cor}</i>${c.e?`<i class="eb">${ENH[c.e].b}</i>`:''}</div><div class="cb"><span>W</span></div></div></div>`;
 }
 function cardEl(c,cls){const d=document.createElement('div'); d.innerHTML=cardHTML(c,cls); return d.firstElementChild;}
 const backHTML=(n=1)=>Array.from({length:n},()=>cardHTML({c:'w',k:'wild'},'down')).join('');
@@ -922,7 +977,7 @@ const TURNS=12;
 const GOALS=[5,8,11,14,17,21,26,32];
 LEVELS.forEach((l,i)=>l.goal=GOALS[i]);
 const VER=4;
-function newRun(){ RUN={v:VER,money:4,level:0,jokers:[],deck:baseDeck(),shop:null}; META.runs++; LS.set('wg.meta',META); saveRun(); }
+function newRun(){ RUN={v:VER,money:4,level:0,jokers:[],tricks:[],deck:baseDeck().map(c=>({...c,u:uid()})),shop:null}; META.runs++; LS.set('wg.meta',META); saveRun(); }
 function saveRun(){ if(RUN) LS.set('wg.run',RUN); else LS.del('wg.run'); }
 
 /* ---------- engine worker (keeps animations smooth while the AI thinks) ---------- */
@@ -1057,6 +1112,8 @@ function showRules(){
   <p>Each piece moves once per turn, and giving check ends your turn on the spot. Your king only has to be safe when your turn ends, so a 2 or 3 can get you out of a check one move can't. It's checkmate only when the card you drew can't save your king.</p>
   <h3>The run</h3>
   <p>Each level gives you 12 turns to reach a score. Captures score chips × mult: pawn 1, knight or bishop 3, rook 5, queen 9, times your multiplier (1 unless jokers raise it). Checkmate wins on the spot. Run out of turns and the run is over.</p>
+  <h3>Packs, tricks and enhancements</h3>
+  <p>The Back Room sells booster packs. Trick Packs hold one-use tricks (you can carry 2): some you use on your turn before playing a card (redraw your hand, swap two pieces, +2 turns), others rework your deck in the shop. Card Packs add new cards, often enhanced: <b>Gold</b> pays $2 when played, <b>Glass</b> gives +1 but can shatter, <b>Steel</b> gives +2 mult that turn, <b>Lucky</b> sometimes pays $3.</p>
   <p>Climb a ladder of 8 opponents. Each win pays cash plus $1 interest per $5 you hold (up to $5). Spend it in the Back Room on jokers that bend the rules, and on trimming or stacking your deck. Lose once and the run is over.</p>
   <div class="btns"><button class="btn" id="m-ok">Got it</button></div></div>`,{dismiss:true});
   $('#m-ok',sh).onclick=closeModal;
@@ -1090,8 +1147,9 @@ function showDeck(){
   $('#m-ok',sh).onclick=closeModal;
 }
 function renderJokerBar(el){
-  if(!RUN||!RUN.jokers.length){ el.innerHTML='<div class="empty">No jokers yet. Win a match to visit the shop.</div>'; return; }
-  el.innerHTML=RUN.jokers.map(jokerHTML).join('');
+  const tr=RUN&&RUN.tricks&&RUN.tricks.length?'<span class="tsep"></span>'+RUN.tricks.map(trickHTML).join(''):'';
+  if(!RUN||!RUN.jokers.length){ el.innerHTML='<div class="empty">No jokers yet. Win a match to visit the shop.</div>'+tr; return; }
+  el.innerHTML=RUN.jokers.map(jokerHTML).join('')+tr;
 }
 document.addEventListener('click',e=>{
   const t=e.target.closest('.jokers .jk'); if(!t) return;
@@ -1112,10 +1170,12 @@ function genOffers(){
   }
   return out;
 }
-function openShop(){ RUN.shop={offers:genOffers(),sold:[],reroll:2,svc:{}}; saveRun(); show('shop'); }
+const newPacks=()=>shuffle(['trick','trick','card','card','joker']).slice(0,2).map(t=>({t,open:false}));
+function openShop(){ RUN.shop={offers:genOffers(),sold:[],reroll:2,svc:{},packs:newPacks()}; saveRun(); show('shop'); }
 function renderShop(){
   if(!RUN) return show('title');
-  if(!RUN.shop) RUN.shop={offers:genOffers(),sold:[],reroll:2,svc:{}};
+  if(!RUN.shop) RUN.shop={offers:genOffers(),sold:[],reroll:2,svc:{},packs:newPacks()};
+  if(!RUN.shop.packs) RUN.shop.packs=newPacks();
   const S=RUN.shop, full=RUN.jokers.length>=MAXJ;
   renderMoney();
   $('#offers').innerHTML=S.offers.map(id=>{const J=JOKERS[id], sold=S.sold.includes(id);
@@ -1130,6 +1190,9 @@ function renderShop(){
   $('#services').innerHTML=svcs.map(s=>`<button class="svc" data-svc="${s.id}" ${S.svc[s.id]||RUN.money<s.cost?'disabled':''}>${cardHTML(s.card)}<span><b>${s.n}</b><small>${S.svc[s.id]?'Done this visit':s.d}</small><em>$${s.cost}</em></span></button>`).join('');
   $('#owned-lbl').textContent=`Your jokers ${RUN.jokers.length}/${MAXJ}`;
   $('#owned').innerHTML=RUN.jokers.length?RUN.jokers.map(jokerHTML).join(''):'<div class="jokers" style="flex:1"><div class="empty">Empty. Jokers you buy show up here.</div></div>';
+  $('#packs').innerHTML=S.packs.map((P,i)=>`<div class="packslot ${P.open?'sold':''}">${packHTML(P.t)}<span><b>${PACKS[P.t].n}</b><small>${PACKS[P.t].d}</small><button class="btn small" data-pack="${i}" ${P.open||RUN.money<PACKS[P.t].c?'disabled':''}>${P.open?'Opened':'$'+PACKS[P.t].c}</button></span></div>`).join('');
+  $('#tricks-lbl').textContent=`Your tricks ${RUN.tricks.length}/${MAXT}`;
+  $('#owned-tricks').innerHTML=RUN.tricks.length?RUN.tricks.map(trickHTML).join(''):'<div class="jokers" style="flex:1"><div class="empty">Tricks come from Trick Packs.</div></div>';
   $('#btn-next').textContent=RUN.level<LEVELS.length?`Next: ${LEVELS[RUN.level].n}`:'Finish';
 }
 $('#offers').addEventListener('click',e=>{
@@ -1140,6 +1203,7 @@ $('#offers').addEventListener('click',e=>{
   const r=b.getBoundingClientRect(); sparks(r.left+r.width/2,r.top,['#f0c060','#fff','#1fb877']);
   renderShop();
 });
+$('#packs').addEventListener('click',e=>{ const b=e.target.closest('[data-pack]'); if(b){ sfx.tap(); openPack(+b.dataset.pack); } });
 $('#btn-reroll').onclick=()=>{ const S=RUN.shop; if(RUN.money<S.reroll) return; RUN.money-=S.reroll; S.reroll++; S.offers=genOffers(); S.sold=[]; saveRun(); sfx.flip(); renderShop(); };
 $('#services').addEventListener('click',e=>{
   const b=e.target.closest('[data-svc]'); if(!b) return; const id=b.dataset.svc, S=RUN.shop; sfx.tap();
@@ -1157,7 +1221,7 @@ $('#services').addEventListener('click',e=>{
     return;
   }
   const card=id==='add2'?{c:COLORS[rnd(4)],k:'plus',n:2}:id==='addw'?{c:'w',k:'wild'}:{c:'w',k:'plus',n:4};
-  RUN.deck.push(card); RUN.money-=cost; S.svc[id]=1; saveRun(); sfx.plus(); renderShop();
+  RUN.deck.push({...card,u:uid()}); RUN.money-=cost; S.svc[id]=1; saveRun(); sfx.plus(); renderShop();
 });
 $('#owned').addEventListener('click',e=>{
   const t=e.target.closest('.jk'); if(!t) return; e.stopPropagation();
@@ -1314,6 +1378,210 @@ function renderSides(){
 function setStatus(p,html){ const el=sideEl(p); if(el) $('.status',el).innerHTML=html; }
 function renderAll(){ renderPieces(); renderMarks(); renderSides(); }
 
+/* ================= tricks, card enhancements, booster packs ================= */
+const uid=()=>Math.random().toString(36).slice(2,9);
+const ENH={
+  gold:{n:'Gold',b:'$',d:'+$2 whenever you play it'},
+  glass:{n:'Glass',b:'◇',d:'+1 move or revive, but 1 in 4 chance to shatter when played'},
+  steel:{n:'Steel',b:'▣',d:'Captures on the turn you play it get +2 mult'},
+  lucky:{n:'Lucky',b:'♣',d:'1 in 3 chance of +$3 when played'},
+};
+const MAXT=2;
+const TRICKS={
+  fresh:{n:'Fresh Hand',g:'↺',w:'match',d:'Throw away your hand and draw a new one.'},
+  scry:{n:'Scry',g:'◎',w:'match',d:'Look at the top 3 cards of your deck and take one into your hand.'},
+  hourglass:{n:'Hourglass',g:'T+2',w:'match',d:'+2 turns this match.'},
+  swap:{n:'Switcheroo',g:'⇄',w:'match',d:'Swap the places of two of your pieces.'},
+  raise:{n:'Raise Dead',g:'R↑',w:'match',d:'Bring back your most valuable captured piece. Doesn\'t use your card play.'},
+  bounty:{n:'Bounty Board',g:'×2',w:'match',d:'Captures this turn score double.'},
+  cold:{n:'Cold Feet',g:'⊘',w:'match',d:"Your opponent's next draw is a Skip."},
+  sharpen:{n:'Sharpen',g:'+1',w:'match',d:'Every number card in your hand gets +1 (max 4).'},
+  gild:{n:'Gild',g:'$',w:'shop',d:'Make a card in your deck Gold: +$2 whenever you play it.'},
+  glaze:{n:'Glaze',g:'◇',w:'shop',d:'Make a card Glass: +1 move or revive, but 1 in 4 chance to shatter when played.'},
+  temper:{n:'Temper',g:'▣',w:'shop',d:'Make a card Steel: captures on the turn you play it get +2 mult.'},
+  clover:{n:'Clover',g:'♣',w:'shop',d:'Make a card Lucky: 1 in 3 chance of +$3 when played.'},
+  promote:{n:'Promote',g:'▲',w:'shop',d:'Raise a number card in your deck by 1 (max 4).'},
+  ember:{n:'Ember',g:'✕',w:'shop',d:'Destroy up to 2 cards from your deck.'},
+};
+function trickHTML(id,i){const T=TRICKS[id];return `<div class="tk ${T.w}" data-t="${id}" data-ti="${i}" role="button" aria-label="${T.n}" style="--d:${i*1.7}s"><span class="jg">${T.g}</span><span class="jn">${T.n}</span></div>`}
+function inMatchTurn(){ return !!(G&&G.mode==='campaign'&&!G.over&&G.phase==='play'&&G.ctrl[G.s.turn]===0&&!isAI(0)); }
+function trickUsable(id){
+  const T=TRICKS[id];
+  if(T.w==='shop') return $('#scr-shop').classList.contains('on');
+  if(!inMatchTurn()) return false;
+  const s=G.s, col=s.turn;
+  if(id==='raise') return G.lost[col].some(e=>reviveSquare(e,s.b)>=0);
+  if(id==='sharpen') return G.hand[0].some(c=>c.k==='num'&&c.n<4);
+  if(id==='scry') return G.decks[0].draw.length>0;
+  return true;
+}
+function showTrick(i){
+  const id=RUN.tricks[i], T=TRICKS[id], ok=trickUsable(id);
+  const where=T.w==='shop'?'Use it in the Back Room.':'Use it on your turn, before you play a card.';
+  const sh=openModal(`<p class="eyebrow">Trick · ${T.w==='shop'?'deck work':'in a match'}</p><h2>${T.n}</h2><p>${T.d}</p><p style="color:var(--dim)">${where}</p>
+    <div class="btns">${ok?'<button class="btn" id="m-use">Use</button>':''}<button class="btn ghost" id="m-sell">Sell for $1</button><button class="btn ghost" id="m-ok">Keep</button></div>`,{dismiss:true});
+  $('#m-ok',sh).onclick=closeModal;
+  $('#m-sell',sh).onclick=()=>{ RUN.tricks.splice(i,1); RUN.money+=1; saveRun(); sfx.coin(); closeModal(); refreshTrickBars(); };
+  if(ok) $('#m-use',sh).onclick=()=>{ closeModal(); useTrick(i); };
+}
+function refreshTrickBars(){
+  if($('#scr-shop').classList.contains('on')) renderShop();
+  if($('#scr-ladder').classList.contains('on')) renderLadder();
+  if(G&&G.mode==='campaign') { renderJokerBar($('#g-jokers')); renderMoney(); }
+}
+document.addEventListener('click',e=>{ const t=e.target.closest('.tk[data-ti]'); if(!t||!RUN) return; e.stopPropagation(); sfx.tap(); showTrick(+t.dataset.ti); },true);
+
+async function useTrick(i){
+  const id=RUN.tricks[i]; if(!id||!trickUsable(id)) return;
+  RUN.tricks.splice(i,1); saveRun();
+  const T=TRICKS[id]; sfx.joker(); banner(T.n,'green',T.d);
+  if(T.w==='shop') return shopTrick(id);
+  const g=G, s=g.s, p=0;
+  refreshTrickBars();
+  if(id==='fresh'){
+    g.decks[p].disc.push(...g.hand[p]); g.hand[p]=[]; renderHand(p);
+    while(g.hand[p].length<handSize(p)){ const c=takeCard(p); if(c.k==='skip'){ g.decks[p].disc.push(c); continue; } g.hand[p].push(c); renderHand(p,1); sfx.flip(); await sleep(150); }
+  } else if(id==='scry'){
+    const top=g.decks[p].draw.slice(-3).reverse();
+    const pick=await new Promise(res=>{
+      const sh=openModal(`<p class="eyebrow">Scry</p><h2>Take one into your hand</h2><p>The rest stay on top of your deck, in this order.</p><div class="choice">${top.map((c,j)=>`<div class="opt" data-i="${j}" style="${c.k==='skip'?'opacity:.3;pointer-events:none':''}">${cardHTML(c)}<small>${j===0?'Next draw':describeCard(c)}</small></div>`).join('')}</div>`);
+      $$('.opt',sh).forEach(o=>o.onclick=()=>{ closeModal(); res(+o.dataset.i); });
+    });
+    const c=top[pick], k=g.decks[p].draw.lastIndexOf(c); g.decks[p].draw.splice(k,1); g.hand[p].push(c); renderHand(p,1); sfx.flip();
+  } else if(id==='hourglass'){
+    g.turnLimit+=2; renderHUD(); const r=$('#g-hud').getBoundingClientRect(); floatText('+2 turns',r.right-50,r.top+10,'#7ff0bd');
+  } else if(id==='swap'){
+    g.phase='trick'; g.trickSel=null; renderHand(p); setStatus(p,'<em>Switcheroo:</em> tap two of your pieces to swap them');
+    return;
+  } else if(id==='raise'){
+    const e=g.lost[s.turn].filter(x=>reviveSquare(x,s.b)>=0).sort((a,b)=>PVAL[ptyp(b.c)]-PVAL[ptyp(a.c)])[0];
+    placeRevived(e);
+  } else if(id==='bounty'){
+    g.x2=true; const r=$('#g-hud').getBoundingClientRect(); floatText('×2 this turn',r.left+80,r.top+10,'#ff8791');
+  } else if(id==='cold'){
+    g.decks[1].draw.push({c:'g',k:'skip'}); renderSides();
+  } else if(id==='sharpen'){
+    g.hand[p].forEach(c=>{ if(c.k==='num'&&c.n<4) c.n++; }); renderHand(p); sfx.plus();
+  }
+  saveMatch(); renderAll(); renderHand(p);
+  setStatus(p,inCheck(s,s.turn)?'<em>Check!</em> Play a card that saves your king':'Pick a card to play');
+}
+// put a captured piece back on the board (shared by + cards and Raise Dead)
+function placeRevived(e){
+  const g=G, s=g.s, lost=g.lost[pcol(e.c)], sq=reviveSquare(e,s.b); if(sq<0) return -1;
+  s.b[sq]=e.c; const id=g.nextId++; g.ids[sq]=id; g.orig[id]={c:e.c,sq:e.sq};
+  lost.splice(lost.indexOf(e),1);
+  for(const cl of g.caps){ const k=cl.indexOf(e.cap); if(k>=0){ cl.splice(k,1); break; } }
+  renderAll();
+  const el=PEL.get(id); if(el) el.classList.add('revive');
+  const [x,y]=screenOf(sq); sparks(x,y,['#f0c060','#fff','#ffd97a']); sfx.move();
+  return sq;
+}
+function swapTap(sq){
+  const g=G, s=g.s, us=s.turn, p=s.b[sq];
+  if(!p||pcol(p)!==us){ setStatus(0,'<em>Switcheroo:</em> tap one of <b>your</b> pieces'); return; }
+  if(g.trickSel==null){ g.trickSel=sq; SQEL[sq].classList.add('sel'); sfx.tap(); setStatus(0,'<em>Switcheroo:</em> now tap the piece to swap with (tap it again to cancel)'); return; }
+  const a=g.trickSel; g.trickSel=null;
+  if(a===sq){ RUN.tricks.push('swap'); saveRun(); refreshTrickBars(); g.phase='play'; renderAll(); renderHand(0); setStatus(0,'Switcheroo cancelled. Pick a card to play'); return; }
+  const back=r=>us===WHITE?r===0||r===7:r===7||r===0;
+  if((ptyp(s.b[a])===PAWN&&back(sq>>3))||(ptyp(s.b[sq])===PAWN&&back(a>>3))){ renderMarks(); setStatus(0,"Pawns can't go on the first or last rank. Tap two pieces"); return; }
+  const b=s.b, ids=g.ids;
+  [b[a],b[sq]]=[b[sq],b[a]]; [ids[a],ids[sq]]=[ids[sq],ids[a]];
+  if(ptyp(b[a])===KING) s.kings[us]=a; if(ptyp(b[sq])===KING) s.kings[us]=sq;
+  if(attacked(b,s.kings[us],us^1)){
+    [b[a],b[sq]]=[b[sq],b[a]]; [ids[a],ids[sq]]=[ids[sq],ids[a]];
+    if(ptyp(b[a])===KING) s.kings[us]=a; if(ptyp(b[sq])===KING) s.kings[us]=sq;
+    renderMarks(); setStatus(0,'That swap leaves your king in check. Tap two pieces'); return;
+  }
+  s.castle&=us===WHITE?~3:~12; s.ep=-1;
+  g.phase='play'; sfx.move(); renderAll(); renderHand(0); saveMatch();
+  for(const q of [a,sq]){ const [x,y]=screenOf(q); sparks(x,y,['#c455e0','#fff']); }
+  setStatus(0,inCheck(s,us)?'<em>Check!</em> Play a card that saves your king':'Pick a card to play');
+}
+// shop tricks: pick cards from a random handful of your deck
+function pickFromDeck(n,filter,title,verb){
+  return new Promise(res=>{
+    const pool=shuffle(RUN.deck.filter(filter).slice()).slice(0,6), pick=new Set();
+    if(!pool.length){ banner('No card fits','red'); res([]); return; }
+    const sh=openModal(`<p class="eyebrow">${title}</p><h2>${n>1?`Choose up to ${n} cards`:'Choose a card'}</h2><p>A random handful from your deck of ${RUN.deck.length}.</p>
+      <div class="choice">${pool.map((c,i)=>`<div class="opt" data-i="${i}">${cardHTML(c)}<small>${c.e?ENH[c.e].n:describeCard(c)}</small></div>`).join('')}</div>
+      <div class="btns"><button class="btn" id="pk-go" disabled>${verb}</button></div>`);
+    $$('.opt',sh).forEach(o=>o.onclick=()=>{ const i=+o.dataset.i; if(pick.has(i)) pick.delete(i); else { if(pick.size>=n) pick.delete([...pick][0]); pick.add(i); } $$('.opt',sh).forEach(x=>x.classList.toggle('on',pick.has(+x.dataset.i))); $('#pk-go',sh).disabled=!pick.size; sfx.tap(); });
+    $('#pk-go',sh).onclick=()=>{ closeModal(); res([...pick].map(i=>pool[i])); };
+  });
+}
+async function shopTrick(id){
+  const enh={gild:'gold',glaze:'glass',temper:'steel',clover:'lucky'}[id];
+  if(enh){ const [c]=await pickFromDeck(1,c=>c.k!=='skip'&&c.e!==enh,TRICKS[id].n,`Make it ${ENH[enh].n}`); if(c){ c.e=enh; sfx.plus(); } }
+  else if(id==='promote'){ const [c]=await pickFromDeck(1,c=>c.k==='num'&&c.n<4,'Promote','Raise by 1'); if(c){ c.n++; sfx.plus(); } }
+  else if(id==='ember'){ const cs=await pickFromDeck(2,()=>true,'Ember','Destroy'); for(const c of cs){ if(RUN.deck.length>10) RUN.deck.splice(RUN.deck.indexOf(c),1); } if(cs.length) sfx.cap(); }
+  saveRun(); renderShop();
+}
+// enhancement effects when you play a card
+async function applyEnh(p,card){
+  const g=G, sr=$('.slot',sideEl(p)).getBoundingClientRect(), x=sr.left+sr.width/2, y=sr.top;
+  if(card.e==='gold'){ addMoney(2,x,y); }
+  if(card.e==='lucky'){ if(rnd(3)===0){ addMoney(3,x,y); floatText('Lucky!',x,y-24,'#7ff0bd'); } else floatText('No luck',x,y-10,'#8b93ad'); }
+  if(card.e==='steel'){ g.steel=true; floatText('+2 mult this turn',x+40,y,'#ff8791'); }
+  if(card.e==='glass'&&rnd(4)===0){
+    const k=RUN.deck.findIndex(c=>c.u&&c.u===card.u); if(k>=0) RUN.deck.splice(k,1);
+    const d=g.decks[p].disc.indexOf(card); if(d>=0) g.decks[p].disc.splice(d,1);
+    saveRun(); floatText('Shattered!',x,y-24,'#bfe6ff'); noise(.35,{v:.5,f:5000,q:.4,type:'highpass'}); tone(2400,.2,{v:.06,type:'square',to:900});
+    const c=$('.slot .card:last-child',sideEl(p)); if(c) c.classList.add('shatter');
+  }
+  await sleep(250);
+}
+
+/* ---------- booster packs ---------- */
+const PACKS={
+  trick:{n:'Trick Pack',c:4,d:'Choose 1 of 3 tricks'},
+  card:{n:'Card Pack',c:4,d:'Choose 1 of 3 cards for your deck'},
+  joker:{n:'Joker Pack',c:6,d:'Choose 1 of 2 jokers'},
+};
+function packHTML(t,cls=''){ return `<div class="pack pk-${t} ${cls}"><span class="pn">${PACKS[t].n.split(' ')[0]}</span><span class="pl">PACK</span></div>`; }
+function randomCard(){
+  const r=Math.random(), col=COLORS[rnd(4)];
+  const c=r<.5?{c:col,k:'num',n:2+rnd(3)}:r<.7?{c:col,k:'plus',n:2+rnd(2)}:r<.85?{c:'w',k:'wild'}:{c:col,k:'rev'};
+  if(Math.random()<.5) c.e=Object.keys(ENH)[rnd(4)];
+  c.u=uid(); return c;
+}
+async function openPack(i){
+  const S=RUN.shop, P=S.packs[i], T=PACKS[P.t];
+  if(P.open||RUN.money<T.c) return;
+  RUN.money-=T.c; P.open=true; saveRun(); renderShop();
+  let items, kind=P.t;
+  if(kind==='trick') items=shuffle(Object.keys(TRICKS)).slice(0,3);
+  else if(kind==='card') items=[randomCard(),randomCard(),randomCard()];
+  else items=genOffers().slice(0,2);
+  const itemHTML=(it,j)=>kind==='card'?`<div class="opt" data-i="${j}">${cardHTML(it,'down')}<small>${it.e?ENH[it.e].n+' · ':''}${describeCard(it)}</small></div>`
+    :kind==='trick'?`<div class="opt" data-i="${j}"><div class="tk big ${TRICKS[it].w}"><span class="jg">${TRICKS[it].g}</span><span class="jn">${TRICKS[it].n}</span></div><small>${TRICKS[it].d}</small></div>`
+    :`<div class="opt" data-i="${j}"><div class="jk big r${JOKERS[it].r}"><span class="jg">${JOKERS[it].g}</span><span class="jn">${JOKERS[it].n}</span></div><small>${JOKERS[it].d}</small></div>`;
+  const sh=openModal(`<p class="eyebrow">${T.n}</p><h2 id="pk-h">Tap to open</h2><div class="pack-stage" id="pk-stage">${packHTML(kind,'big')}</div>
+    <div class="choice pack-items" id="pk-items" hidden>${items.map(itemHTML).join('')}</div><p id="pk-note" style="color:var(--dim);margin-top:10px"></p>
+    <div class="btns"><button class="btn ghost" id="pk-skip">Skip</button></div>`);
+  const pk=$('.pack',sh);
+  await new Promise(r=>{ pk.onclick=r; $('#pk-skip',sh).onclick=r; });
+  pk.classList.add('burst'); sfx.rev();
+  const pr=pk.getBoundingClientRect(); sparks(pr.left+pr.width/2,pr.top+pr.height/2,['#f0c060','#fff','#c455e0','#3a78f0']);
+  await sleep(450);
+  $('#pk-stage',sh).hidden=true; $('#pk-items',sh).hidden=false; $('#pk-h',sh).textContent='Choose one';
+  const opts=$$('.opt',sh);
+  opts.forEach((o,j)=>{ o.style.animation=`packin .45s ${j*.09}s cubic-bezier(.2,.8,.2,1) both`; const c=$('.card',o); if(c) setTimeout(()=>{c.classList.remove('down'); sfx.flip();},(250+j*120)*SPD()); });
+  const can=it=>kind==='joker'?RUN.jokers.length<MAXJ:kind==='trick'?(RUN.tricks.length<MAXT||TRICKS[it].w==='shop'):true;
+  opts.forEach((o,j)=>{ if(!can(items[j])) o.classList.add('off'); });
+  if(kind==='trick'&&RUN.tricks.length>=MAXT) $('#pk-note',sh).textContent='Your trick slots are full: deck-work tricks will be used right away.';
+  if(kind==='joker'&&RUN.jokers.length>=MAXJ) $('#pk-note',sh).textContent='Your joker slots are full. Sell one to make room next time.';
+  const pick=await new Promise(r=>{ opts.forEach((o,j)=>o.onclick=()=>{ if(can(items[j])) r(j); }); $('#pk-skip',sh).onclick=()=>r(-1); });
+  closeModal();
+  if(pick<0) return renderShop();
+  const it=items[pick];
+  if(kind==='card'){ RUN.deck.push(it); sfx.plus(); }
+  else if(kind==='joker'){ RUN.jokers.push(it); sfx.joker(); }
+  else if(RUN.tricks.length<MAXT){ RUN.tricks.push(it); sfx.joker(); }
+  else { RUN.tricks.push(it); saveRun(); return useTrick(RUN.tricks.length-1); }
+  saveRun(); renderShop();
+}
+
 /* ---------- turn flow: refill your hand, play one card, resolve it ---------- */
 const handSize=p=>3+(G.mode==='campaign'&&p===0&&has('anchor')?1:0);
 function takeCard(p){
@@ -1322,7 +1590,7 @@ function takeCard(p){
   if(!d.draw.length) d.draw=shuffle(baseDeck());
   return d.draw.pop();
 }
-const effN=(p,c)=>(c.n||1)+(G.mode==='campaign'&&p===0&&has('redtide')&&c.c==='r'&&c.k==='num'?1:0);
+const effN=(p,c)=>(c.n||1)+(G.mode==='campaign'&&p===0&&has('redtide')&&c.c==='r'&&c.k==='num'?1:0)+(G.mode==='campaign'&&p===0&&c.e==='glass'?1:0);
 // can this card do anything legal right now? In check, only cards that can save the king count.
 function cardUsable(p,c){
   const g=G, s=g.s, inC=inCheck(s,s.turn);
@@ -1339,6 +1607,7 @@ async function startTurn(goAgain=false){
   g.phase='refill'; g.slots=[]; g.slotIdx=0; g.used=[]; g.blood=false; g.cont=false; g.sel=null; g.targets=null; g.combo=0; g.handSel=-1;
   renderAll();
   if(insufficient(s.b)) return endMatch(-1,'material');
+  if(!goAgain){ g.steel=false; g.x2=false; }
   if(camp&&p===0&&!goAgain){ if(g.myTurns>=g.turnLimit) return endMatch(1,'turns'); g.myTurns++; renderHUD(); }
   setStatus(1-p,'');
   if(!goAgain){ const oc=$('.slot .card',sideEl(p)); if(oc) oc.classList.add('used-card'); }
@@ -1471,6 +1740,7 @@ async function resolveCard(p,card){
   const g=G, s=g.s, camp=g.mode==='campaign', you=camp&&p===0;
   g.card[p]=card;
   g.decks[p].disc.push(card);
+  if(you&&card.e){ await applyEnh(p,card); if(G!==g) return; }
   if(card.k==='wild'){
     if(you&&g.rule==='silence'){ banner('Silenced','red','Wild counts as one move'); stamp(p,'SILENCED'); await sleep(700); return beginMoves(p,[{t:0}]); }
     const opts=revealOptions(p,you&&has('wildheart')?3:2);
@@ -1493,7 +1763,7 @@ async function resolveCard(p,card){
     return startTurn(true);
   }
   if(card.k==='plus'){
-    let n=card.n;
+    let n=card.n+(you&&card.e==='glass'?1:0);
     if(you&&has('doubledown')){n++; fireJoker('doubledown','+1');}
     if(camp&&p===1&&g.rule==='heavy') n++;
     if(camp&&p===1&&has('jammer')){n=1; fireJoker('jammer','Jammed');}
@@ -1502,7 +1772,7 @@ async function resolveCard(p,card){
   // number card: n different pieces, one move each
   const n=effN(p,card);
   if(you){
-    if(n>card.n) fireJoker('redtide','+1 piece');
+    if(has('redtide')&&card.c==='r') fireJoker('redtide','+1 piece');
     if(has('zerohour')&&card.n===1){fireJoker('zerohour'); addMoney(2);}
   }
   const slots=Array.from({length:n},()=>({t:0}));
@@ -1537,12 +1807,13 @@ async function scoreCapture(res){
   if(has('executioner')&&(t===ROOK||t===QUEEN)){ chips+=5; fireJoker('executioner','+5 chips'); }
   if(has('momentum')&&g.combo){ mult+=g.combo; fireJoker('momentum','+'+g.combo+' mult'); }
   if(has('rider')&&RUN.rider){ mult+=RUN.rider; }
+  if(g.steel) mult+=2;
   if(has('hoarder')){ const h=Math.floor(RUN.money/10); if(h){ mult+=h; fireJoker('hoarder','+'+h+' mult'); } }
   if(has('rider')&&mover===KNIGHT){ RUN.rider=(RUN.rider||0)+1; saveRun(); renderJokerBar($('#g-jokers')); fireJoker('rider','+1 mult'); }
   g.combo++;
-  const pts=chips*mult, pop=document.createElement('div');
+  const pts=chips*mult*(g.x2?2:1), pop=document.createElement('div');
   pop.className='scp'; pop.style.left=x+'px'; pop.style.top=y+'px';
-  pop.innerHTML=`<b class="ch">${chips}</b><i>×</i><b class="mu">${mult}</b>`;
+  pop.innerHTML=`<b class="ch">${chips}</b><i>×</i><b class="mu">${mult}</b>${g.x2?'<i>×2</i>':''}`;
   $('#fx').appendChild(pop); setTimeout(()=>pop.remove(),1100*SPD()+200);
   sfx.score(g.combo);
   await sleep(420);
@@ -1781,6 +2052,7 @@ function select(sq){
 function deselect(){ if(!G) return; G.sel=null; G.targets=null; for(const [,el] of PEL) el.classList.remove('lift'); renderMarks(); }
 const board=$('#board');
 board.addEventListener('pointerdown',e=>{
+  if(G&&G.phase==='trick'){ const sq=boardSq(e); if(sq>=0) swapTap(sq); return; }
   if(!humanTurn()) return;
   const sq=boardSq(e); if(sq<0) return;
   const g=G, tm=(g.targets||[]).filter(m=>m.t===sq);
@@ -1937,6 +2209,7 @@ function dbgPanel(){
     </div>
     ${camp?`<h3>JUMP TO LEVEL</h3><div class="seg">${LEVELS.map((l,i)=>`<button data-l="${i}" class="${i===g.lvl?'on':''}">${i+1}</button>`).join('')}</div>
     <h3>JOKERS (TAP TO ADD / REMOVE, NO SLOT LIMIT)</h3><div class="dlist">${Object.keys(JOKERS).map(j=>`<button data-j="${j}" class="${RUN.jokers.includes(j)?'on':''}">${JOKERS[j].g} ${JOKERS[j].n}</button>`).join('')}</div>`:''}
+    ${camp?`<h3>TRICKS (TAP TO ADD)</h3><div class="dlist">${Object.keys(TRICKS).map(t=>`<button data-tr="${t}">${TRICKS[t].g} ${TRICKS[t].n}</button>`).join('')}</div>`:''}
     <div class="btns"><button class="btn ghost" id="d-off">Turn debug off</button><button class="btn" id="m-ok">Close</button></div>`,{dismiss:true});
   $('#m-ok',sh).onclick=closeModal;
   $('#d-off',sh).onclick=()=>{closeModal(); setDebug(false);};
@@ -1966,6 +2239,7 @@ function dbgPanel(){
     PEL.clear(); $('#pieces').innerHTML=''; labelSquares();
     if(['move','play','between'].includes(G.phase)) startTurn(true); else renderAll();
   });
+  $$('[data-tr]',sh).forEach(b=>b.onclick=()=>{ RUN.tricks.push(b.dataset.tr); saveRun(); renderJokerBar($('#g-jokers')); sfx.joker(); b.animate([{transform:'scale(1.1)'},{transform:'none'}],{duration:250}); });
   $$('[data-l]',sh).forEach(b=>b.onclick=()=>{ closeModal(); RUN.level=+b.dataset.l; RUN.shop=null; saveRun(); G=null; LS.del('wg.match'); startMatch('campaign',RUN.level); });
   $$('[data-j]',sh).forEach(b=>b.onclick=()=>{ const j=b.dataset.j; RUN.jokers=RUN.jokers.includes(j)?RUN.jokers.filter(x=>x!==j):RUN.jokers.concat(j); saveRun(); b.classList.toggle('on'); renderJokerBar($('#g-jokers')); sfx.joker(); });
 }
@@ -2003,6 +2277,7 @@ function startBG(){
 }
 /* ---------- boot ---------- */
 function boot(){
+  if(RUN){ RUN.tricks=RUN.tricks||[]; RUN.deck.forEach(c=>{ if(!c.u) c.u=uid(); }); }
   { const d=LS.get('wg.dbg',null); if(d) Object.assign(DBG,d); if(/debug/.test(location.hash+location.search)) DBG.on=true; setDebug(DBG.on); }
   // saves from before the 1–4 number deck: rebuild the deck, drop any half-played match
   if(RUN&&RUN.v!==VER){ if(!(RUN.v>=2)) RUN.deck=baseDeck(); RUN.v=VER; saveRun(); }
