@@ -4,24 +4,26 @@ Chess where every turn starts with a card draw. Built for the iPhone browser; on
 
 Open `index.html` in Safari (or host it anywhere, e.g. GitHub Pages) and use Share → Add to Home Screen for a full-screen app.
 
-## Cards
+## How a turn works
+
+You hold a hand of 3 cards. Each turn you refill to 3, then play one.
 
 | Card | Effect |
 | --- | --- |
-| Number 1–4 | Move that many different pieces, one move each. The deck is weighted low (three 1s, two 2s, one 3, one 4 per color), so a turn averages 2 moves |
-| +2 / +3 / Wild +4 | Bring back up to that many of your captured pieces, to their starting squares (nearest free back-rank square if taken). A queen counts as 2; a promoted pawn returns as a pawn. Reviving is the whole turn. With nothing to revive, or while in check, it plays as a 1 |
-| Skip | Lose your turn (one move instead if you're in check) |
-| Reverse | The board flips: players swap armies, and the opponent moves next with the side that was to move |
+| Number 1–4 | Move that many different pieces, one move each (weighted to 1s and 2s) |
+| +2 / +3 / Wild +4 | Bring back up to that many of your captured pieces to their starting squares (queen counts 2; promoted pawns return as pawns). Reviving is the whole turn |
+| Reverse | The board spins and you go again: refill and play another card |
 | Wild | Turn over two cards and keep one |
+| Skip | Never enters your hand: drawing one costs you that turn (redrawn if you're in check) |
 
-Chess rules are standard (castling, en passant, promotion, checkmate, stalemate). Each piece moves at most once per turn, and giving check ends the turn. Your king only has to be safe when your turn ends, so checkmate is decided after the draw: you lose only if the card you drew can't get your king out of check.
+Chess rules are standard. Each piece moves at most once per turn, giving check ends the turn, and your king only has to be safe when your turn ends. Checkmate is judged against your hand: you lose only if no card you hold can save the king.
 
 ## Modes
 
-- **Run**: 8 AI opponents with rising search depth and rule twists. Wins pay cash plus interest. Spend it on jokers (25 kinds, 5 slots) and deck edits in the Back Room. One loss ends the run.
-- **Pass & play**: two people on one phone; the top rail is rotated for the player across the table.
+- **Run**: 8 AI opponents. Each level gives you 12 turns to reach a score; captures score chips × mult (pawn 1, knight/bishop 3, rook 5, queen 9, × a multiplier jokers raise). Checkmate wins outright. Wins pay cash, $1 per unused turn (max $5) and interest. Spend it on jokers (30 kinds, 5 slots) and deck edits in the Back Room. Missing a target or getting mated ends the run.
+- **Pass & play**: two people on one phone, checkmate only; the top rail is rotated for the player across the table.
 
-Progress is saved in `localStorage`. The AI runs in a Web Worker so animations stay smooth while it thinks.
+Progress is saved in `localStorage`. The AI runs in a Web Worker; the swirling background is a small WebGL shader.
 
 ## Testing tools
 

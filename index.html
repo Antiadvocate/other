@@ -339,6 +339,62 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .fast .ci{transition-duration:.14s!important}
 .fast #banner .bn{animation-duration:.45s!important}
 .fast .board.flipping,.fast .board.flipping .pc svg{animation-duration:.24s!important}
+
+/* ---------- hand, HUD, juice ---------- */
+#bgfx{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block}
+@keyframes sway{0%,100%{rotate:-1.3deg;translate:0 0}50%{rotate:1.3deg;translate:0 -3px}}
+.side:not(.compact) .slot{--cw:54px}
+.hand{display:flex;align-items:flex-end;padding-top:14px;min-width:0;min-height:calc(54px*1.5 + 14px)}
+.hand .card{--cw:54px;cursor:pointer;transition:transform .22s cubic-bezier(.3,.7,.2,1),filter .25s;animation:sway 3.8s ease-in-out infinite;animation-delay:calc(var(--d,0s)*-1)}
+.hand .card+.card{margin-left:-12px}
+.hand.live .card .cf{box-shadow:inset 0 0 0 calc(var(--w)*.055) #fbf8f0,0 0 0 1.5px rgba(240,192,96,.55),0 8px 18px rgba(0,0,0,.5)}
+.hand .card.sel{transform:translateY(-16px) scale(1.08);z-index:3}
+.hand .card.sel .cf{box-shadow:inset 0 0 0 calc(var(--w)*.055) #fbf8f0,0 0 0 2.5px var(--gold),0 0 24px rgba(240,192,96,.7)}
+.hand .card.nope{filter:grayscale(.9) brightness(.5)}
+.hand:not(.live) .card{filter:saturate(.75) brightness(.85)}
+.hand:not(.live) .card.nope{filter:grayscale(.9) brightness(.5)}
+.hcount{margin-left:auto;font:800 10px var(--f-display);color:var(--dim);white-space:nowrap}
+.side:not(.compact) .peek{position:static;transform:none}
+.jk{animation:sway 4.6s ease-in-out infinite;animation-delay:calc(var(--d,0s)*-1)}
+.jk .jc{position:absolute;right:-5px;top:-6px;font:800 9px/1 var(--f-display);font-style:normal;color:#fff;background:var(--red);padding:3px 5px;border-radius:7px}
+.fan .card{animation:fanin .9s cubic-bezier(.2,.8,.2,1) both,sway 4.2s ease-in-out infinite}
+.fan .card:nth-child(2n){animation-delay:.07s,-1.4s}
+.fan .card:nth-child(3n){animation-delay:.14s,-2.6s}
+.board.spinning{animation:bspin 1s cubic-bezier(.65,0,.3,1)}
+.board.spinning .pc svg{animation:pspin 1s cubic-bezier(.65,0,.3,1)}
+@keyframes bspin{0%{transform:none}50%{transform:rotate(180deg) scale(.76)}100%{transform:rotate(360deg)}}
+@keyframes pspin{to{transform:rotate(-360deg)}}
+.fast .board.spinning,.fast .board.spinning .pc svg{animation-duration:.25s!important}
+.hud{flex:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:7px 12px;margin-top:4px;border-radius:14px;background:rgba(8,11,22,.55);box-shadow:inset 0 0 0 1px var(--line)}
+.hud[hidden]{display:none}
+.hud .sc{display:flex;align-items:baseline;gap:6px;font-variant-numeric:tabular-nums}
+.hud .sc b{font:900 20px/1 var(--f-display);color:#fff;min-width:1.4em;text-align:right}
+.hud .sc small{font:800 12px var(--f-display);color:var(--dim)}
+.hud .bar{height:10px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden}
+.hud .bar i{display:block;height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,#2f7ff5,#8a5cf6,#ef4455);transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.hud .tn{font:800 11px var(--f-display);color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+.hud .tn b{font-size:16px;color:var(--text)}
+.hud.warn .tn b{color:#ff8791}
+.hud.pop{animation:hudpop .45s ease}
+@keyframes hudpop{30%{transform:scale(1.035)}}
+.scp{position:absolute;display:flex;align-items:center;gap:4px;transform:translate(-50%,-50%);animation:scp 1.1s cubic-bezier(.2,.8,.2,1) forwards;z-index:3}
+.scp b{font:900 16px/1 var(--f-display);color:#fff;padding:6px 9px;border-radius:9px;box-shadow:0 5px 12px rgba(0,0,0,.45),inset 0 -2px 0 rgba(0,0,0,.2)}
+.scp .ch{background:#2f7ff5}
+.scp .mu{background:#ef4455}
+.scp i{font:900 14px var(--f-display);font-style:normal;color:#fff;text-shadow:0 2px 0 #000}
+@keyframes scp{0%{opacity:0;transform:translate(-50%,-30%) scale(.3) rotate(-8deg)}18%{opacity:1;transform:translate(-50%,-70%) scale(1.2) rotate(3deg)}30%{transform:translate(-50%,-70%) scale(1) rotate(0)}78%{opacity:1}100%{opacity:0;transform:translate(-50%,-120%) scale(.9)}}
+.fast .scp{animation-duration:.4s}
+.side .line{grid-column:1/-1;display:flex;align-items:center;gap:10px;min-height:30px;margin-top:-2px}
+.side .line .status{flex:1;min-width:0}
+.side .line .row{min-height:0;flex:none}
+.side .line .pips{flex:none}
+.side:not(.compact){row-gap:6px;padding-block:8px}
+@media (max-width:370px),(max-height:700px){
+  .hand .card,.side:not(.compact) .slot{--cw:46px}
+  .hand{min-height:calc(46px*1.5 + 10px);padding-top:10px}
+  .hand .card+.card{margin-left:-14px}
+  .side .line .status{font-size:12px}
+}
 @media (max-height:700px){
   .side .slot{--cw:56px}
   .side .deck{--cw:46px}
@@ -412,6 +468,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 </svg>
 
 <div class="app" id="app">
+  <canvas id="bgfx" aria-hidden="true"></canvas>
   <!-- TITLE -->
   <section class="screen" id="scr-title">
     <div class="inner title">
@@ -468,6 +525,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
         <div class="money" id="g-money">$0</div>
       </header>
       <div class="jokers" id="g-jokers"></div>
+      <div class="hud" id="g-hud" hidden><div class="sc"><span class="eyebrow">Score</span><b id="h-score">0</b><small>/ <span id="h-target">0</span></small></div><div class="bar"><i id="h-bar"></i></div><div class="tn">Turn <b id="h-turn">1</b>/<span id="h-limit">12</span></div></div>
       <div class="side" id="side-1"></div>
       <div class="board-wrap" id="board-wrap">
         <div class="board" id="board"><div class="squares" id="squares"></div><div class="pieces" id="pieces"></div></div>
@@ -763,6 +821,7 @@ const sfx={
   skip(){tone(420,.3,{v:.18,type:'triangle',to:160})},
   rev(){tone(180,.9,{v:.12,type:'sawtooth',to:720}); noise(.9,{v:.18,f:500,q:2})},
   plus(){[523,659,784,1046].forEach((f,i)=>tone(f,.16,{v:.1,type:'triangle',at:i*.055}))},
+  score(k=1){ const f=392*Math.pow(1.1225,Math.min(k,12)); tone(f,.14,{v:.12,type:'triangle'}); tone(f*1.5,.12,{v:.08,type:'triangle',at:.05}); noise(.05,{v:.2,f:4000,q:1}); },
   joker(){tone(990,.06,{v:.08,type:'square'}); tone(1480,.1,{v:.07,type:'square',at:.05})},
   win(){[523,659,784,1046,1318,1568].forEach((f,i)=>tone(f,.35,{v:.12,type:'triangle',at:i*.09}))},
   lose(){[392,330,262,196].forEach((f,i)=>tone(f,.4,{v:.13,type:'triangle',at:i*.15}))},
@@ -804,7 +863,7 @@ const backHTML=(n=1)=>Array.from({length:n},()=>cardHTML({c:'w',k:'wild'},'down'
 /* ---------- jokers ---------- */
 const RAR={1:'Common',2:'Uncommon',3:'Rare'};
 const JOKERS={
-  bodyguard:{n:'Bodyguard',r:1,c:5,g:'♚',d:'Your Skip cards become a single move.'},
+  bodyguard:{n:'Bodyguard',r:1,c:5,g:'♚',d:'Skips you draw turn into 1 cards.'},
   pickpocket:{n:'Pickpocket',r:1,c:4,g:'$',d:'Earn $1 for every piece you capture.'},
   greenthumb:{n:'Green Thumb',r:1,c:4,g:'G$',d:'Earn $1 whenever you draw a green card.'},
   blueblood:{n:'Blue Blood',r:1,c:5,g:'♙',d:'Blue cards give you an extra pawn move.'},
@@ -813,14 +872,19 @@ const JOKERS={
   turncoat:{n:'Turncoat',r:1,c:4,g:'⇅',d:'Earn $5 every time the board flips.'},
   clairvoyant:{n:'Clairvoyant',r:1,c:3,g:'◉',d:'See the next card in both decks.'},
   wildheart:{n:'Wild Heart',r:1,c:4,g:'✦',d:'Wild cards show 3 choices instead of 2.'},
-  speedrun:{n:'Blitz',r:1,c:5,g:'»',d:'Win within 20 of your turns: +$6.'},
+  speedrun:{n:'Blitz',r:1,c:5,g:'»',d:'Unused turns pay $2 each instead of $1 (max $10).'},
+  sharpshooter:{n:'Sharpshooter',r:1,c:5,g:'♙×3',d:'Captures by pawns score triple chips.'},
+  momentum:{n:'Momentum',r:1,c:5,g:'×+',d:'Each capture in the same turn adds +1 mult.'},
   taxman:{n:'Tax Collector',r:1,c:4,g:'¢',d:'At a win, +$1 for every 3 pieces you still have.'},
   doubledown:{n:'Double Down',r:2,c:7,g:'++',d:'Your + cards revive one extra piece.'},
   bounty:{n:'Bounty Hunter',r:2,c:6,g:'♛',d:'Earn $4 when you capture a rook or queen.'},
   redtide:{n:'Red Tide',r:2,c:6,g:'R+',d:'Red number cards move one extra piece.'},
   lucky7:{n:'Second Wind',r:2,c:7,g:'↺',d:'After you revive pieces, you also get one move.'},
-  mulligan:{n:'Mulligan',r:2,c:6,g:'↻',d:'When you draw a Skip, draw again.'},
-  anchor:{n:'Anchor',r:2,c:6,g:'↓',d:'When you draw a Reverse, draw again.'},
+  mulligan:{n:'Mulligan',r:2,c:6,g:'↻',d:'Skips you draw are thrown back and redrawn.'},
+  executioner:{n:'Executioner',r:2,c:6,g:'+5',d:'Capturing a rook or queen scores +5 chips.'},
+  rider:{n:'Night Rider',r:2,c:7,g:'♞↑',d:'Gains +1 mult every time one of your knights captures. Keeps it all run.'},
+  anchor:{n:'Deep Pockets',r:3,c:8,g:'✋4',d:'Hold 4 cards instead of 3.'},
+  hoarder:{n:'Dragon Hoard',r:3,c:8,g:'$×',d:'+1 mult for every $10 you hold.'},
   saboteur:{n:'Saboteur',r:2,c:6,g:'✕',d:"Opponent's deck gets 3 extra Skips."},
   coronation:{n:'Coronation',r:2,c:5,g:'♕',d:'Promoting a pawn earns $6.'},
   banker:{n:'Banker',r:2,c:6,g:'%',d:'Interest cap goes from $5 to $10.'},
@@ -831,7 +895,7 @@ const JOKERS={
   fate:{n:'Hand of Fate',r:3,c:8,g:'4',d:'Your first card each match is a 4.'},
 };
 const MAXJ=5;
-function jokerHTML(id){const J=JOKERS[id];return `<div class="jk r${J.r}" data-j="${id}" role="button" aria-label="${J.n}"><span class="jg">${J.g}</span><span class="jn">${J.n}</span></div>`}
+function jokerHTML(id){const J=JOKERS[id];return `<div class="jk r${J.r}" data-j="${id}" role="button" aria-label="${J.n}" style="--d:${(id.length*.37)%4}s"><span class="jg">${J.g}</span><span class="jn">${J.n}</span>${id==='rider'&&RUN&&RUN.rider?`<i class="jc">+${RUN.rider}</i>`:''}</div>`}
 const has=id=>!!(G&&G.mode==='campaign'&&RUN&&RUN.jokers.includes(id));
 
 /* ---------- campaign ---------- */
@@ -854,7 +918,10 @@ const LEVELS=[
   {n:'The Grandmaster',t:'Final boss',m:'GM',a:'#f0c060',depth:5,noise:0,ms:1500,rule:'pure'},
 ];
 const reward=i=>4+i;
-const VER=3;
+const TURNS=12;
+const GOALS=[5,8,11,14,17,21,26,32];
+LEVELS.forEach((l,i)=>l.goal=GOALS[i]);
+const VER=4;
 function newRun(){ RUN={v:VER,money:4,level:0,jokers:[],deck:baseDeck(),shop:null}; META.runs++; LS.set('wg.meta',META); saveRun(); }
 function saveRun(){ if(RUN) LS.set('wg.run',RUN); else LS.del('wg.run'); }
 
@@ -932,7 +999,7 @@ function confetti(ms=2600){
 function moneyEls(){return ['#g-money','#ld-money','#sh-money'].map(q=>$(q))}
 function renderMoney(){ for(const e of moneyEls()) e.textContent='$'+(RUN?RUN.money:0); }
 function addMoney(n,x,y){
-  if(!RUN||!n) return; RUN.money+=n; saveRun(); renderMoney(); sfx.coin();
+  if(!RUN||!n) return; const was=RUN.money; RUN.money+=n; saveRun(); renderMoney(); rollNum($('#g-money'),was,RUN.money,500,'$'); sfx.coin();
   const m=$('#g-money'); m.classList.remove('pop'); void m.offsetWidth; m.classList.add('pop');
   if(x!==undefined) floatText('+$'+n,x,y);
 }
@@ -978,17 +1045,18 @@ $('#btn-sound').onclick=()=>{SET.sound=!SET.sound; LS.set('wg.set',SET); renderT
 function showRules(){
   const C=(c)=>cardHTML(c);
   const sh=openModal(`<div class="rules"><h2><span class="serif">How to</span> play</h2>
-  <p>Standard chess: same pieces, same moves, checkmate wins. The twist: at the start of every turn you tap your deck and draw a card. The card decides your turn.</p>
+  <p>Standard chess: same pieces, same moves, checkmate wins. The twist: you hold a hand of 3 cards. Each turn you refill your hand and play one card, and that card decides your turn.</p>
   <dl>
     <dt>${C({c:'r',k:'num',n:3})}</dt><dd><b>Number card (1–4).</b> Move that many <b>different</b> pieces, one move each. Most cards are 1s and 2s.</dd>
     <dt>${C({c:'y',k:'plus',n:2})}</dt><dd><b>+2 / +3 / +4.</b> Bring back up to that many of your captured pieces, to their starting squares. A queen counts as 2. Reviving is your whole turn. In check, a revive that blocks the check counts. With nothing useful to revive, it plays as a 1.</dd>
-    <dt>${C({c:'g',k:'skip'})}</dt><dd><b>Skip.</b> You lose your turn. If you're in check, you get one move instead.</dd>
-    <dt>${C({c:'b',k:'rev'})}</dt><dd><b>Reverse.</b> The board flips. You and your opponent swap armies, and your opponent moves next with the side that was about to move.</dd>
+    <dt>${C({c:'g',k:'skip'})}</dt><dd><b>Skip.</b> Never goes in your hand: drawing one costs you that turn. In check, it's redrawn.</dd>
+    <dt>${C({c:'b',k:'rev'})}</dt><dd><b>Reverse.</b> The board spins and you go again: refill your hand and play another card.</dd>
     <dt>${C({c:'w',k:'wild'})}</dt><dd><b>Wild.</b> Turn over two cards from your deck and keep the one you want.</dd>
   </dl>
   <h3>Multi-move turns</h3>
   <p>Each piece moves once per turn, and giving check ends your turn on the spot. Your king only has to be safe when your turn ends, so a 2 or 3 can get you out of a check one move can't. It's checkmate only when the card you drew can't save your king.</p>
   <h3>The run</h3>
+  <p>Each level gives you 12 turns to reach a score. Captures score chips × mult: pawn 1, knight or bishop 3, rook 5, queen 9, times your multiplier (1 unless jokers raise it). Checkmate wins on the spot. Run out of turns and the run is over.</p>
   <p>Climb a ladder of 8 opponents. Each win pays cash plus $1 interest per $5 you hold (up to $5). Spend it in the Back Room on jokers that bend the rules, and on trimming or stacking your deck. Lose once and the run is over.</p>
   <div class="btns"><button class="btn" id="m-ok">Got it</button></div></div>`,{dismiss:true});
   $('#m-ok',sh).onclick=closeModal;
@@ -1003,7 +1071,7 @@ function renderLadder(){
   L.innerHTML=LEVELS.map((l,i)=>({l,i})).reverse().map(({l,i})=>{
     const st=i<RUN.level?'done':i===RUN.level?'cur':'lock';
     const rule=l.rule?`<span class="rulechip">${RULES[l.rule].n}: ${RULES[l.rule].d}</span>`:'';
-    return `<div class="rung ${st}"><span class="num">${i+1}</span><div class="ava" style="--a:${l.a}">${l.m}</div><div class="ri"><b>${l.n}</b><small>${l.t}</small>${rule}</div><div class="rw">${st==='done'?'Beaten':'$'+reward(i)}<small>${st==='done'?'':'REWARD'}</small></div></div>`;
+    return `<div class="rung ${st}"><span class="num">${i+1}</span><div class="ava" style="--a:${l.a}">${l.m}</div><div class="ri"><b>${l.n}</b><small>${l.t} · score ${l.goal} in ${TURNS} turns</small>${rule}</div><div class="rw">${st==='done'?'Beaten':'$'+reward(i)}<small>${st==='done'?'':'REWARD'}</small></div></div>`;
   }).join('');
   const cur=$('.rung.cur',L); if(cur) setTimeout(()=>cur.scrollIntoView({block:'center',behavior:'smooth'}),60);
   $('#btn-play').textContent=`Play ${LEVELS[RUN.level].n}`;
@@ -1120,12 +1188,15 @@ function startMatch(mode,lvl){
   if(rule==='stacked') COLORS.forEach(c=>d1.push({c,k:'num',n:3}));
   if(rule==='pure') d1=d1.filter(c=>c.k!=='skip'&&c.k!=='rev');
   G={mode,lvl,rule,s,ids,ctrl:[0,1],decks:[{draw:shuffle(d0),disc:[]},{draw:shuffle(d1),disc:[]}],card:[null,null],
+     hand:[[],[]],handSel:-1,combo:0,score:0,target:L?L.goal:0,turnLimit:L?TURNS:0,
      phase:'init',slots:[],slotIdx:0,used:[],cont:false,pendingEp:-1,blood:false,turnNo:0,myTurns:0,caps:[[],[]],lost:[[],[]],orig,nextId:100,last:null,over:false};
   if(has('saboteur')) for(let i=0;i<3;i++) G.decks[1].draw.splice(rnd(G.decks[1].draw.length+1),0,{c:COLORS[i],k:'skip'});
   if(has('fate')) G.decks[0].draw.push({c:'r',k:'num',n:4});
   if(has('ironwall')) G.decks[1].draw.push({c:'r',k:'skip'});
+  // the opponent's hand is dealt face down up front; yours is dealt with animation on your first turn
+  while(G.hand[1].length<3){ const c=takeCard(1); if(c.k==='skip') G.decks[1].disc.push(c); else G.hand[1].push(c); }
   enterGame();
-  const intro=mode==='campaign'?[L.n,rule?RULES[rule].n+': '+RULES[rule].d:L.t]:['Pass & play','White draws first'];
+  const intro=mode==='campaign'?[L.n,`Score ${L.goal} in ${TURNS} turns, or checkmate`+(rule?` · ${RULES[rule].n}`:'')]:['Pass & play','Checkmate wins'];
   setTimeout(()=>{ if(G) { banner(intro[0],'gold',intro[1]); } },350);
   setTimeout(()=>startTurn(),1500);
 }
@@ -1133,7 +1204,9 @@ function resumeMatch(saved){
   if(!saved) return;
   G=saved; G.sel=null; G.targets=null;
   enterGame();
-  if(G.phase==='move'){ const p=G.ctrl[G.s.turn]; renderAll(); if(isAI(p)) aiPlay(); else humanPrompt(); }
+  const p=G.ctrl[G.s.turn];
+  if(G.phase==='move'){ renderAll(); if(isAI(p)) aiPlay(); else humanPrompt(); }
+  else if(G.phase==='play'){ renderAll(); renderHand(p); if(isAI(p)) playCard(p,aiChooseCard(p)); else setStatus(p,'Pick a card to play'); }
   else startTurn();
 }
 function saveMatch(){ if(!G||G.over) return; const {sel,targets,...rest}=G; LS.set('wg.match',{...rest,v:VER}); }
@@ -1144,7 +1217,7 @@ function enterGame(){
   $('#g-money').style.display=camp?'':'none';
   if(camp){ const L=LEVELS[G.lvl]; $('#g-title').textContent=`${G.lvl+1}. ${L.n}`; $('#g-sub').textContent=G.rule?RULES[G.rule].n:L.t; renderJokerBar($('#g-jokers')); renderMoney(); }
   else { $('#g-title').textContent='Pass & play'; $('#g-sub').textContent='Hand the phone over each turn'; }
-  buildSide(0); buildSide(1);
+  buildSide(0); buildSide(1); renderHUD();
   show('game');
   sizeBoard(); buildSquares(); renderAll();
 }
@@ -1155,17 +1228,19 @@ function buildSide(p){
   if(camp&&p===1){const L=LEVELS[G.lvl]; name=L.n; ava=L.m; a=L.a;}
   else if(camp){name='You'; ava='You'; a='#3a78f0';}
   else {name='Player '+(p+1); ava='P'+(p+1); a=p?'#ef4455':'#3a78f0';}
-  el.innerHTML=`<div class="deck" data-p="${p}" role="button" aria-label="Draw a card"><div class="stack">${backHTML(3)}</div><span class="cnt"></span><span class="peek"></span></div>
-    <div class="slot"></div>
-    <div class="info"><div class="who"><div class="ava" style="--a:${a}">${ava}</div><div class="nm"><b>${name}</b><span class="army"></span></div></div>
-    ${compact&&G.rule?`<span class="rulechip">${RULES[G.rule].n}</span>`:''}
-    <div class="caps"></div><div class="status"></div><div class="row"><div class="pips"></div><button class="endturn" hidden>End turn</button></div></div>`;
-  $('.deck',el).addEventListener('click',()=>{ if(G&&G.phase==='draw'&&G.ctrl[G.s.turn]===p&&!isAI(p)) drawCard(p); });
+  const who=`<div class="who"><div class="ava" style="--a:${a}">${ava}</div><div class="nm"><b>${name}</b><span class="army"></span></div>${compact?'<span class="hcount"></span>':''}</div>`;
+  const act=`<div class="status"></div><div class="row"><div class="pips"></div><button class="endturn" hidden>End turn</button></div>`;
+  // compact (AI) rail keeps everything in one column; full rails put status + End turn on their own line under the cards
+  el.innerHTML=compact
+    ?`<div class="deck"><div class="stack">${backHTML(3)}</div><span class="cnt"></span><span class="peek"></span></div><div class="slot"></div><div class="info">${who}${G.rule?`<span class="rulechip">${RULES[G.rule].n}</span>`:''}<div class="caps"></div>${act}</div>`
+    :`<div class="slot"></div><div class="hand"></div><div class="info">${who}<div class="caps"></div><span class="peek"></span></div><div class="line">${act}</div>`;
   $('.endturn',el).addEventListener('click',()=>{ if(G&&G.phase==='move'&&G.ctrl[G.s.turn]===p&&G.slotIdx>0&&!inCheck(G.s,G.s.turn)){ sfx.tap(); deselect(); endTurn(); } });
   $('.slot',el).addEventListener('click',()=>{ const c=G&&G.card[p]; if(c){ banner(cardName(c),'nf',describeCard(c)); } });
+  if($('.hand',el)) $('.hand',el).addEventListener('click',e=>onHandTap(p,e));
   const c=G.card[p]; if(c) $('.slot',el).appendChild(cardEl(c,'used-card'));
+  renderHand(p);
 }
-function describeCard(c){ return c.k==='num'?(c.n===1?'One move':`${c.n} pieces, one move each`):c.k==='plus'?`Revive up to ${c.n} lost piece${c.n>1?'s':''}`:{skip:'Lose the turn',rev:'Board flips',wild:'Pick one of two'}[c.k]; }
+function describeCard(c){ return c.k==='num'?(c.n===1?'One move':`${c.n} pieces, one move each`):c.k==='plus'?`Revive up to ${c.n} lost piece${c.n>1?'s':''}`:{skip:'Lose the turn',rev:'Board spins, go again',wild:'Pick one of two'}[c.k]; }
 function cardKey(c){ return c.k==='num'?'num'+c.n:c.k==='plus'?'plus'+c.n:c.k; }
 function sizeBoard(){
   const w=$('#board-wrap'); if(!w||!w.clientWidth) return;
@@ -1173,6 +1248,7 @@ function sizeBoard(){
   const b=$('#board'); b.style.width=b.style.height=s+'px'; b.style.setProperty('--sqpx',(s/8)+'px');
 }
 addEventListener('resize',()=>{ if($('#scr-game').classList.contains('on')) sizeBoard(); });
+if(window.ResizeObserver) new ResizeObserver(()=>{ if($('#scr-game').classList.contains('on')) sizeBoard(); }).observe($('#board-wrap'));
 function buildSquares(){
   const box=$('#squares'); box.innerHTML=''; SQEL=[];
   for(let vi=0;vi<64;vi++){ const d=document.createElement('div'); box.appendChild(d); }
@@ -1220,10 +1296,10 @@ function renderSides(){
     const el=sideEl(p), color=g.ctrl[WHITE]===p?WHITE:BLACK, dk=g.decks[p];
     el.classList.toggle('active',cur===p&&!g.over);
     $('.army',el).innerHTML=`<i style="background:${color===WHITE?'#f4ecdb':'#1c1f29'}"></i>${color===WHITE?'White':'Black'}`;
-    $('.cnt',el).textContent=dk.draw.length;
-    const deck=$('.deck',el); deck.classList.toggle('ready',g.phase==='draw'&&cur===p&&!isAI(p));
+    if($('.cnt',el)) $('.cnt',el).textContent=dk.draw.length;
+    if($('.hcount',el)) $('.hcount',el).textContent=g.hand[p].length+' in hand';
     const peek=$('.peek',el);
-    if(has('clairvoyant')){ const top=dk.draw[dk.draw.length-1]||dk.disc[0]; peek.innerHTML=top?`<i style="background:${CCOL[top.c]}"></i>${cardName(top)}`:''; } else peek.innerHTML='';
+    if(has('clairvoyant')){ const top=dk.draw[dk.draw.length-1]||dk.disc[0]; peek.innerHTML=top?`<i style="background:${CCOL[top.c]}"></i>Next: ${cardName(top)}`:''; } else peek.innerHTML='';
     const caps=g.caps[p].slice().sort((a,b)=>PVAL[ptyp(b)]-PVAL[ptyp(a)]);
     const mat=v=>g.caps[v].reduce((t,x)=>t+PVAL[ptyp(x)],0), adv=Math.round((mat(p)-mat(1-p))/100);
     $('.caps',el).innerHTML=caps.map(x=>pieceSVG(x,{shadow:false})).join('')+(adv>0?`<span class="adv">+${adv}</span>`:'');
@@ -1232,117 +1308,189 @@ function renderSides(){
       pips.innerHTML=g.slots.map((sl,i)=>`<span class="pip ${i<g.slotIdx?'done':i===g.slotIdx?'cur':''}">${sl.t?(sl.t===PAWN?'♙':'♘'):i+1}</span>`).join('');
     } else pips.innerHTML='';
     et.hidden=!(cur===p&&g.phase==='move'&&!isAI(p)&&g.slotIdx>0&&g.slotIdx<g.slots.length&&!inCheck(s,s.turn));
+    const hb=$('.hand',el); if(hb) hb.classList.toggle('live',g.phase==='play'&&cur===p&&!isAI(p));
   }
 }
 function setStatus(p,html){ const el=sideEl(p); if(el) $('.status',el).innerHTML=html; }
 function renderAll(){ renderPieces(); renderMarks(); renderSides(); }
 
-/* ---------- turn flow ---------- */
+/* ---------- turn flow: refill your hand, play one card, resolve it ---------- */
+const handSize=p=>3+(G.mode==='campaign'&&p===0&&has('anchor')?1:0);
 function takeCard(p){
   const d=G.decks[p];
   if(!d.draw.length){ d.draw=shuffle(d.disc); d.disc=[]; }
   if(!d.draw.length) d.draw=shuffle(baseDeck());
   return d.draw.pop();
 }
-async function startTurn(){
-  const g=G; if(!g||g.over) return;
-  const s=g.s, side=s.turn, p=g.ctrl[side];
-  g.phase='draw'; g.slots=[]; g.slotIdx=0; g.used=[]; g.blood=false; g.cont=false; g.sel=null; g.targets=null;
-  renderAll();
-  // no mate check here: the card you draw decides whether you can escape
-  if(insufficient(s.b)) return endMatch(-1,'material');
-  if(p===0) g.myTurns++;
-  saveMatch();
-  setStatus(1-p,'');
-  if(inCheck(s,side)) { sfx.check(); }
-  const oc=$('.slot .card',sideEl(p)); if(oc) oc.classList.add('used-card');
-  if(isAI(p)){ setStatus(p,'Drawing…'); await sleep(650); if(G!==g) return; drawCard(p); }
-  else setStatus(p,g.mode==='local'?`<em>${p?'Player 2':'Player 1'}</em>, tap your deck to draw`:inCheck(s,side)?'<em>Check!</em> Tap your deck to draw':'Your turn. Tap your deck to draw');
+const effN=(p,c)=>(c.n||1)+(G.mode==='campaign'&&p===0&&has('redtide')&&c.c==='r'&&c.k==='num'?1:0);
+// can this card do anything legal right now? In check, only cards that can save the king count.
+function cardUsable(p,c){
+  const g=G, s=g.s, inC=inCheck(s,s.turn);
+  if(c.k==='rev'||c.k==='wild') return true;
+  const anyMove=legalMoves(s).length>0;
+  if(c.k==='plus'){ const lost=g.lost[s.turn]; return anyMove||lost.some(e=>inC?safeAfter([e]):reviveSquare(e,s.b)>=0); }
+  if(!inC) return anyMove;
+  const n=effN(p,c);
+  return canFinish(s,Array.from({length:n},()=>({t:0})),0,[],Math.min(n,4));
 }
-async function animateDraw(p,card){
+async function startTurn(goAgain=false){
+  const g=G; if(!g||g.over) return;
+  const s=g.s, side=s.turn, p=g.ctrl[side], camp=g.mode==='campaign';
+  g.phase='refill'; g.slots=[]; g.slotIdx=0; g.used=[]; g.blood=false; g.cont=false; g.sel=null; g.targets=null; g.combo=0; g.handSel=-1;
+  renderAll();
+  if(insufficient(s.b)) return endMatch(-1,'material');
+  if(camp&&p===0&&!goAgain){ if(g.myTurns>=g.turnLimit) return endMatch(1,'turns'); g.myTurns++; renderHUD(); }
+  setStatus(1-p,'');
+  if(!goAgain){ const oc=$('.slot .card',sideEl(p)); if(oc) oc.classList.add('used-card'); }
+  if(inCheck(s,side)) sfx.check();
+  const skipped=await refillHand(p); if(G!==g) return;
+  if(skipped){
+    await sleep(900); if(G!==g) return;
+    s.turn^=1; s.ep=-1; g.last=null;
+    return nextTurn();
+  }
+  const inC=inCheck(s,side);
+  if(!g.hand[p].some(c=>cardUsable(p,c))){
+    if(inC){ banner('No escape','red','No card in hand can save the king'); await sleep(1100); return endMatch(1-p,'mate'); }
+    return endMatch(-1,'stalemate');
+  }
+  g.phase='play'; saveMatch(); renderSides(); renderHand(p);
+  if(isAI(p)){ setStatus(p,'Choosing a card…'); await sleep(550); if(G!==g) return; return playCard(p,aiChooseCard(p)); }
+  setStatus(p,(g.mode==='local'?`<em>Player ${p+1}</em>: `:'')+(inC?'<em>Check!</em> Play a card that saves your king':'Pick a card to play'));
+}
+async function refillHand(p){
+  const g=G, you=g.mode==='campaign'&&p===0, rail=$('.hand',sideEl(p));
+  let skipped=false, guard=0;
+  while(g.hand[p].length<handSize(p)&&guard++<14){
+    let c=takeCard(p);
+    if(c.k==='skip'){
+      if(you&&has('mulligan')){ fireJoker('mulligan','Redraw'); g.decks[p].disc.push(c); continue; }
+      if(you&&has('bodyguard')){ fireJoker('bodyguard','Skip → 1'); c={c:c.c,k:'num',n:1}; }
+      else if(inCheck(g.s,g.s.turn)){ g.decks[p].disc.push(c); banner('In check','red','Skip is redrawn'); await sleep(500); continue; }
+      else if(!skipped){
+        skipped=true; g.decks[p].disc.push(c); g.card[p]=c;
+        await animateDraw(p,c); stamp(p,'SKIPPED'); sfx.skip();
+        banner('Skipped',  'red',(g.mode==='campaign'?(p===0?'You lose':'They lose'):'Player '+(p+1)+' loses')+' this turn');
+        continue;
+      } else { g.decks[p].disc.push(c); continue; }
+    }
+    g.hand[p].push(c);
+    if(you&&c.c==='g'&&has('greenthumb')){ fireJoker('greenthumb'); addMoney(1); }
+    if(rail){ renderHand(p,1); sfx.flip(); await sleep(170); }
+  }
+  renderSides();
+  return skipped;
+}
+function renderHand(p,animNew=0){
+  const g=G, el=sideEl(p), box=el&&$('.hand',el); if(!box) return;
+  const live=g.phase==='play'&&g.ctrl[g.s.turn]===p&&!isAI(p), inC=live&&inCheck(g.s,g.s.turn);
+  box.classList.toggle('live',live);
+  box.innerHTML=g.hand[p].map((c,i)=>cardHTML(c,`${live&&g.handSel===i?'sel':''} ${inC&&!cardUsable(p,c)?'nope':''}`)).join('');
+  const kids=$$('.card',box);
+  kids.forEach((c,i)=>{ c.dataset.i=i; c.style.setProperty('--d',(i*1.3+p*.6)+'s'); });
+  for(const c of kids.slice(kids.length-animNew)){
+    c.classList.add('down'); c.style.transform='translate(70px,-10px) rotate(14deg)'; c.style.opacity='0';
+    c.getBoundingClientRect();
+    c.style.transition=`transform ${.42*SPD()}s cubic-bezier(.2,.8,.2,1),opacity .2s`;
+    requestAnimationFrame(()=>{ c.style.transform=''; c.style.opacity=''; setTimeout(()=>{c.classList.remove('down'); c.style.transition='';},120*SPD()); });
+  }
+}
+function onHandTap(p,e){
+  const g=G, c=e.target.closest('.card'); if(!g||!c) return;
+  const i=+c.dataset.i, card=g.hand[p][i]; if(!card) return;
+  if(g.phase!=='play'||g.ctrl[g.s.turn]!==p||isAI(p)){ banner(cardName(card),'nf',describeCard(card)); return; }
+  if(c.classList.contains('nope')){ setStatus(p,"That card can't get your king out of check"); sfx.skip(); return; }
+  if(g.handSel===i) return playCard(p,i);
+  g.handSel=i; sfx.tap(); renderHand(p);
+  setStatus(p,`<em>${cardName(card)}</em>: ${describeCard(card)}. Tap again to play.`);
+}
+async function animateDraw(p,card,fromRect){
   const el=sideEl(p), slot=$('.slot',el), deck=$('.deck',el);
   const old=$('.card',slot); if(old){ old.style.transition='opacity .25s,transform .25s'; old.style.opacity='0'; old.style.transform='translateY(10px) scale(.9)'; setTimeout(()=>old.remove(),260); }
-  const c=cardEl(card,'down'); slot.appendChild(c);
-  const sr=slot.getBoundingClientRect(), dr=deck.getBoundingClientRect();
-  const flip=el.classList.contains('flipped')?-1:1;
-  const scale=dr.width/sr.width;
+  const c=cardEl(card,fromRect?'':'down'); slot.appendChild(c);
+  const sr=slot.getBoundingClientRect(), flip=el.classList.contains('flipped')?-1:1;
+  const dr=fromRect||(deck?deck.getBoundingClientRect():{left:sr.left+40,top:sr.top-60,width:sr.width*.6});
   c.style.transformOrigin='0 0';
-  c.style.transform=`translate(${(dr.left-sr.left)*flip}px,${(dr.top-sr.top)*flip}px) scale(${scale}) rotate(-6deg)`;
+  c.style.transform=`translate(${(dr.left-sr.left)*flip}px,${(dr.top-sr.top)*flip}px) scale(${dr.width/sr.width}) rotate(-6deg)`;
   c.getBoundingClientRect();
   sfx.flip();
   c.style.transition=`transform ${.5*SPD()}s cubic-bezier(.2,.8,.2,1)`;
-  requestAnimationFrame(()=>{ c.style.transform='none'; setTimeout(()=>c.classList.remove('down'),140); });
-  $('.cnt',el).textContent=G.decks[p].draw.length;
-  await sleep(720);
+  requestAnimationFrame(()=>{ c.style.transform='none'; setTimeout(()=>c.classList.remove('down'),140*SPD()); });
+  renderSides();
+  await sleep(620);
 }
 function stamp(p,text){ const c=$('.slot .card:last-child',sideEl(p)); if(c){ const s=document.createElement('div'); s.className='stamp'; s.textContent=text; c.appendChild(s);} }
-async function drawCard(p){
-  const g=G; if(g.phase!=='draw') return; g.phase='drawing';
-  renderSides(); setStatus(p,'');
-  let card=takeCard(p);
-  await animateDraw(p,card); if(G!==g) return;
-  if(p===0&&g.mode==='campaign'){
-    for(let i=0;i<3;i++){
-      if(card.k==='skip'&&has('mulligan')){ fireJoker('mulligan','Redraw'); g.decks[p].disc.push(card); card=takeCard(p); await animateDraw(p,card); if(G!==g) return; continue; }
-      if(card.k==='rev'&&has('anchor')){ fireJoker('anchor','Redraw'); g.decks[p].disc.push(card); card=takeCard(p); await animateDraw(p,card); if(G!==g) return; continue; }
-      break;
-    }
-  }
+async function playCard(p,i){
+  const g=G; if(g.phase!=='play') return;
+  const card=g.hand[p][i]; if(!card) return;
+  const hc=$$('.hand .card',sideEl(p))[i], from=hc?hc.getBoundingClientRect():null;
+  g.phase='resolving'; g.hand[p].splice(i,1); g.handSel=-1;
+  renderHand(p); setStatus(p,'');
+  await animateDraw(p,card,from); if(G!==g) return;
   resolveCard(p,card);
+}
+function aiChooseCard(p){
+  const g=G, s=g.s, hand=g.hand[p], inC=inCheck(s,s.turn), lostV=g.lost[s.turn].reduce((t,e)=>t+PVAL[ptyp(e.c)],0)/100;
+  let bi=0, bv=-1e9;
+  hand.forEach((c,i)=>{
+    let v;
+    if(!cardUsable(p,c)) v=-1e6;
+    else if(c.k==='num') v=effN(p,c)+(inC?2:0);
+    else if(c.k==='plus') v=lostV>=3?1.5+Math.min(lostV,c.n*3)/2:.3;
+    else if(c.k==='rev') v=hand.length>1?Math.max(1,...hand.filter((x,j)=>j!==i&&x.k==='num').map(x=>x.n))+.5:1.2;
+    else v=2.2;
+    if(v>bv){bv=v;bi=i;}
+  });
+  return bi;
 }
 function revealOptions(p,n){
   const out=[], back=[];
   let guard=0;
-  while(out.length<n&&guard++<60){ const c=takeCard(p); if(c.k==='wild') back.push(c); else out.push(c); }
+  while(out.length<n&&guard++<60){ const c=takeCard(p); if(c.k==='wild'||c.k==='skip') back.push(c); else out.push(c); }
   G.decks[p].disc.push(...back);
   return out;
 }
-function chooseCard(opts,p){
+function chooseCard(opts,p,ok){
   return new Promise(res=>{
     const flip=G.mode==='local'&&p===1;
-    const sh=openModal(`<p class="eyebrow">Wild card</p><h2>Keep one</h2><p>The other${opts.length>2?'s go':' goes'} to your discard pile.</p><div class="choice">${opts.map((c,i)=>`<div class="opt" data-i="${i}">${cardHTML(c)}<small>${describeCard(c)}</small></div>`).join('')}</div>`,{flip});
+    const sh=openModal(`<p class="eyebrow">Wild card</p><h2>Keep one</h2><p>${ok.every(Boolean)?`The other${opts.length>2?'s go':' goes'} to your discard pile.`:"You're in check. Greyed cards can't save your king."}</p><div class="choice">${opts.map((c,i)=>`<div class="opt" data-i="${i}" style="${ok[i]?'':'opacity:.3;pointer-events:none'}">${cardHTML(c)}<small>${describeCard(c)}</small></div>`).join('')}</div>`,{flip});
     $$('.opt',sh).forEach(o=>o.onclick=()=>{ sfx.tap(); closeModal(); res(+o.dataset.i); });
   });
 }
-function aiPickWild(opts){
-  const mine=evaluate(G.s);
-  const score=c=>c.k==='rev'?(mine<-250?50:-20):c.k==='skip'?(inCheck(G.s,G.s.turn)?1:-30):c.k==='plus'?(G.lost[G.s.turn].length?1.5+c.n*.5:1):c.n;
-  let bi=0; opts.forEach((c,i)=>{ if(score(c)>score(opts[bi])) bi=i; }); return bi;
+function aiPickWild(opts,ok){
+  const score=c=>c.k==='rev'?3:c.k==='plus'?(G.lost[G.s.turn].length?1.5+c.n*.5:.5):c.n;
+  let bi=ok.indexOf(true); opts.forEach((c,i)=>{ if(ok[i]&&score(c)>score(opts[bi])) bi=i; }); return bi;
+}
+async function spinBoard(){
+  const bd=$('#board');
+  bd.classList.remove('spinning'); void bd.offsetWidth; bd.classList.add('spinning');
+  await sleep(1020);
+  bd.classList.remove('spinning');
 }
 async function resolveCard(p,card){
-  const g=G, s=g.s, side=s.turn, camp=g.mode==='campaign', you=camp&&p===0;
+  const g=G, s=g.s, camp=g.mode==='campaign', you=camp&&p===0;
   g.card[p]=card;
+  g.decks[p].disc.push(card);
   if(card.k==='wild'){
-    g.decks[p].disc.push(card);
     if(you&&g.rule==='silence'){ banner('Silenced','red','Wild counts as one move'); stamp(p,'SILENCED'); await sleep(700); return beginMoves(p,[{t:0}]); }
     const opts=revealOptions(p,you&&has('wildheart')?3:2);
     if(you&&has('wildheart')) fireJoker('wildheart');
+    const ok=opts.map(c=>cardUsable(p,c));
+    if(!ok.some(Boolean)){ banner('No escape','red','Neither card saves the king'); opts.forEach(c=>g.decks[p].disc.push(c)); await sleep(1100); return endMatch(1-p,'mate'); }
     setStatus(p,isAI(p)?'Choosing…':'');
     await sleep(isAI(p)?500:150);
-    const i=isAI(p)?aiPickWild(opts):await chooseCard(opts,p);
+    const i=isAI(p)?aiPickWild(opts,ok):await chooseCard(opts,p,ok);
     if(G!==g) return;
     opts.forEach((c,j)=>{ if(j!==i) g.decks[p].disc.push(c); });
-    const pick=opts[i];
-    await animateDraw(p,pick); if(G!==g) return;
-    return resolveCard(p,pick);
+    await animateDraw(p,opts[i]); if(G!==g) return;
+    return resolveCard(p,opts[i]);
   }
-  g.decks[p].disc.push(card);
-  if(you&&card.c==='g'&&has('greenthumb')){ fireJoker('greenthumb'); addMoney(1); }
-  if(card.k==='skip'){
-    if(you&&has('bodyguard')){ fireJoker('bodyguard','Guarded'); stamp(p,'GUARDED'); return beginMoves(p,[{t:0}]); }
-    if(inCheck(s,side)){ banner('In check','red','Skip becomes one move'); stamp(p,'CHECK'); await sleep(900); return beginMoves(p,[{t:0}]); }
-    banner('Skipped','red',(camp?(p===0?'You lose':'They lose'):'Player '+(p+1)+' loses')+' the turn'); sfx.skip(); stamp(p,'SKIPPED');
-    await sleep(1300); if(G!==g) return;
-    s.turn^=1; s.ep=-1; g.last=null;
-    return nextTurn();
-  }
+  if(card.k==='skip') return beginMoves(p,[{t:0}]);
   if(card.k==='rev'){
-    banner('Reverse','blue','The board flips. Armies swap.'); sfx.rev();
-    await sleep(500); if(G!==g) return;
-    await flipBoard(); if(G!==g) return;
-    if(camp&&has('turncoat')){ fireJoker('turncoat'); addMoney(5); }
-    await sleep(350);
-    return nextTurn();
+    banner('Reverse','blue','The board spins. Go again.'); sfx.rev();
+    await spinBoard(); if(G!==g) return;
+    if(camp&&has('turncoat')&&you){ fireJoker('turncoat'); addMoney(5); }
+    return startTurn(true);
   }
   if(card.k==='plus'){
     let n=card.n;
@@ -1352,9 +1500,9 @@ async function resolveCard(p,card){
     return revive(p,n);
   }
   // number card: n different pieces, one move each
-  let n=card.n||1;
+  const n=effN(p,card);
   if(you){
-    if(has('redtide')&&card.c==='r'){n++; fireJoker('redtide','+1 piece');}
+    if(n>card.n) fireJoker('redtide','+1 piece');
     if(has('zerohour')&&card.n===1){fireJoker('zerohour'); addMoney(2);}
   }
   const slots=Array.from({length:n},()=>({t:0}));
@@ -1366,6 +1514,45 @@ async function resolveCard(p,card){
   if(slots.length>2) sfx.plus();
   beginMoves(p,slots);
 }
+
+/* ---------- scoring: captures score chips × mult (Balatro style) ---------- */
+const CHIPS=[0,1,3,3,5,9];
+function rollNum(el,from,to,ms=600,pre=''){
+  if(!el) return; const t0=performance.now(); ms*=SPD();
+  (function f(now){ const k=Math.min(1,(now-t0)/ms), e=1-Math.pow(1-k,3); el.textContent=pre+Math.round(from+(to-from)*e); if(k<1) requestAnimationFrame(f); })(t0);
+}
+function renderHUD(){
+  const g=G, h=$('#g-hud'); if(!h) return;
+  if(!g||g.mode!=='campaign'){ h.hidden=true; return; }
+  h.hidden=false;
+  $('#h-score').textContent=g.score; $('#h-target').textContent=g.target;
+  $('#h-bar').style.width=Math.min(100,g.score/g.target*100)+'%';
+  $('#h-turn').textContent=Math.max(1,g.myTurns); $('#h-limit').textContent=g.turnLimit;
+  h.classList.toggle('warn',g.turnLimit-g.myTurns<=2);
+}
+async function scoreCapture(res){
+  const g=G, t=ptyp(res.captured), mover=ptyp(g.s.b[res.to]), [x,y]=screenOf(res.capSq);
+  let chips=CHIPS[t], mult=1;
+  if(has('sharpshooter')&&mover===PAWN){ chips*=3; fireJoker('sharpshooter','×3 chips'); }
+  if(has('executioner')&&(t===ROOK||t===QUEEN)){ chips+=5; fireJoker('executioner','+5 chips'); }
+  if(has('momentum')&&g.combo){ mult+=g.combo; fireJoker('momentum','+'+g.combo+' mult'); }
+  if(has('rider')&&RUN.rider){ mult+=RUN.rider; }
+  if(has('hoarder')){ const h=Math.floor(RUN.money/10); if(h){ mult+=h; fireJoker('hoarder','+'+h+' mult'); } }
+  if(has('rider')&&mover===KNIGHT){ RUN.rider=(RUN.rider||0)+1; saveRun(); renderJokerBar($('#g-jokers')); fireJoker('rider','+1 mult'); }
+  g.combo++;
+  const pts=chips*mult, pop=document.createElement('div');
+  pop.className='scp'; pop.style.left=x+'px'; pop.style.top=y+'px';
+  pop.innerHTML=`<b class="ch">${chips}</b><i>×</i><b class="mu">${mult}</b>`;
+  $('#fx').appendChild(pop); setTimeout(()=>pop.remove(),1100*SPD()+200);
+  sfx.score(g.combo);
+  await sleep(420);
+  floatText('+'+pts,x,y-26,'#fff');
+  const from=g.score; g.score+=pts;
+  rollNum($('#h-score'),from,g.score,650);
+  $('#h-bar').style.width=Math.min(100,g.score/g.target*100)+'%';
+  const hs=$('#g-hud'); hs.classList.remove('pop'); void hs.offsetWidth; hs.classList.add('pop');
+}
+
 /* ---------- + cards: revive lost pieces ---------- */
 const reviveCost=e=>ptyp(e.c)===QUEEN?2:1;
 // starting square if empty, else the nearest empty square on the back two ranks (pawns: their own rank)
@@ -1498,6 +1685,8 @@ async function afterMove(p,res){
   g.cont=false; // the move just made already passed the turn; only re-open it below if moves remain
   g.used.push(res.id);
   if(res.captured&&you){
+    await scoreCapture(res); if(G!==g) return;
+    if(g.score>=g.target){ await sleep(300); return endMatch(0,'target'); }
     const [x,y]=screenOf(res.capSq);
     if(has('pickpocket')){ fireJoker('pickpocket'); addMoney(1,x,y); }
     if(has('bounty')&&(ptyp(res.captured)===ROOK||ptyp(res.captured)===QUEEN)){ fireJoker('bounty'); addMoney(4,x,y-20); }
@@ -1521,8 +1710,8 @@ async function afterMove(p,res){
 function endTurn(){
   const g=G; if(!g||g.over) return;
   if(g.cont){ g.s.turn^=1; g.s.ep=g.pendingEp; g.cont=false; }
-  g.phase='between'; g.sel=null; g.targets=null;
-  const p=1-g.ctrl[g.s.turn]; setStatus(p,'');
+  g.phase='between'; g.sel=null; g.targets=null; g.handSel=-1;
+  const p=1-g.ctrl[g.s.turn]; setStatus(p,''); renderHand(p);
   nextTurn();
 }
 function nextTurn(){
@@ -1576,18 +1765,6 @@ function applyMove(m){
   renderAll();
   return {id,captured:cap,capSq,promo:m.pr,to:m.t};
 }
-async function flipBoard(){
-  const bd=$('#board');
-  bd.classList.add('flipping');
-  await sleep(1020);
-  G.ctrl=[G.ctrl[1],G.ctrl[0]];
-  bd.classList.add('notrans');
-  labelSquares(); renderAll();
-  bd.classList.remove('flipping');
-  void bd.offsetWidth;
-  bd.classList.remove('notrans');
-}
-
 /* ---------- touch input: tap-tap or drag ---------- */
 let DRAG=null;
 function boardSq(e){
@@ -1655,7 +1832,7 @@ async function doHumanMove(ms){
 /* ---------- end of match ---------- */
 async function endMatch(winner,reason){
   const g=G; g.over=true; g.phase='over'; LS.del('wg.match'); renderAll();
-  const why={mate:'Checkmate',stalemate:'Stalemate',material:'Not enough material to mate',resign:'Resigned'}[reason];
+  const why={mate:'Checkmate',stalemate:'Stalemate',material:'Not enough material to mate',resign:'Resigned',target:'Target reached',turns:'Out of turns'}[reason];
   await sleep(500); if(G!==g) return;
   if(g.mode==='local'){
     if(winner>=0){ sfx.win(); confetti(); }
@@ -1667,10 +1844,12 @@ async function endMatch(winner,reason){
   const L=LEVELS[g.lvl];
   if(winner===0){
     sfx.win(); confetti();
-    const lines=[[`Beat ${L.n}`,reward(g.lvl)]];
+    const lines=[[`Beat ${L.n}`,reward(g.lvl)]], spare=Math.max(0,g.turnLimit-g.myTurns);
+    if(reason==='mate') lines.push(['Checkmate bonus',3]);
+    const per=has('speedrun')?2:1, capT=5*per;
+    if(spare) lines.push([`${spare} unused turn${spare>1?'s':''} × $${per} (max $${capT})`,Math.min(capT,spare*per)]);
     const cap=has('banker')?10:5, interest=Math.min(cap,Math.floor(RUN.money/5));
     if(interest) lines.push([`Interest ($1 per $5, max $${cap})`,interest]);
-    if(has('speedrun')&&g.myTurns<=20) lines.push(['Blitz',6]);
     if(has('taxman')){ const mine=g.ctrl[WHITE]===0?WHITE:BLACK; const n=g.s.b.filter(x=>x&&pcol(x)===mine).length; const t=Math.floor(n/3); if(t) lines.push([`Tax Collector (${n} pieces)`,t]); }
     const total=lines.reduce((a,l)=>a+l[1],0);
     RUN.money+=total; RUN.level++; META.best=Math.max(META.best,RUN.level); saveRun(); LS.set('wg.meta',META); renderMoney();
@@ -1684,7 +1863,7 @@ async function endMatch(winner,reason){
   } else if(winner===1){
     sfx.lose();
     const lvl=RUN.level+1; RUN=null; saveRun();
-    const sh=openModal(`<p class="eyebrow">${why}</p><h2><span class="serif">Run over</span></h2><p>${L.n} beat you on level ${lvl} of 8. Your jokers and cash are gone.</p><div class="btns"><button class="btn" id="m-new">Start a new run</button><button class="btn ghost" id="m-home">Title screen</button></div>`);
+    const sh=openModal(`<p class="eyebrow">${why}</p><h2><span class="serif">Run over</span></h2><p>${reason==='turns'?`You scored ${g.score} of ${g.target} before your turns ran out.`:`${L.n} beat you on level ${lvl} of 8.`} Your jokers and cash are gone.</p><div class="btns"><button class="btn" id="m-new">Start a new run</button><button class="btn ghost" id="m-home">Title screen</button></div>`);
     $('#m-new',sh).onclick=()=>{closeModal(); G=null; newRun(); show('ladder')};
     $('#m-home',sh).onclick=()=>{closeModal(); G=null; show('title')};
   } else {
@@ -1717,11 +1896,11 @@ $('#btn-menu').onclick=()=>{
 
 /* ---------- deck viewer: what's left in your draw pile and the odds of each draw ---------- */
 function viewDeck(p=0){
-  const g=G, dk=g.decks[p], left=dk.draw, all=left.concat(dk.disc, g.card[p]&&!left.includes(g.card[p])&&!dk.disc.includes(g.card[p])?[g.card[p]]:[]);
+  const g=G, dk=g.decks[p], left=dk.draw, all=left.concat(dk.disc,g.hand[p]);
   const total=left.length||1, groups=deckGroups(all), cnt=new Map(); for(const c of left){const k=cardKey(c); cnt.set(k,(cnt.get(k)||0)+1);}
   const moves=left.reduce((t,c)=>t+(c.k==='num'?c.n:c.k==='plus'||c.k==='wild'?1.5:c.k==='skip'?0:1),0)/total;
   const who=g.mode==='local'?`Player ${p+1}'s`:p===0?'Your':LEVELS[g.lvl].n+"'s";
-  const sh=openModal(`<p class="eyebrow">${who} deck</p><h2>${left.length} left to draw</h2><p>${dk.disc.length} in the discard pile. When the draw pile runs out, the discards are shuffled back in.</p>
+  const sh=openModal(`<p class="eyebrow">${who} deck</p><h2>${left.length} left to draw</h2><p>${g.hand[p].length} in hand, ${dk.disc.length} in the discard pile. When the draw pile runs out, the discards are shuffled back in.</p>
     <div class="odds">${groups.map(gr=>{const n=cnt.get(gr.key)||0, pct=Math.round(n/total*100);
       return `<div class="or ${n?'':'gone'}">${cardHTML(gr.card)}<div class="bar"><i style="width:${pct}%"></i></div><b>${n}/${gr.n} <small>· ${pct}%</small></b></div>`}).join('')}</div>
     <p>Average draw from here: <b style="color:var(--gold)">${moves.toFixed(1)} moves</b>.</p>
@@ -1749,7 +1928,7 @@ function dbgPanel(){
   const tg=(id,on,label)=>`<button class="${on?'on':''}" data-t="${id}">${label}</button>`;
   const sh=openModal(`<p class="eyebrow">Debug</p><h2>Test tools</h2>
     <h3>SPEED</h3><div class="seg">${tg('fast',DBG.fast,'Fast anims')}${camp?tg('instant',DBG.instant,'Instant AI')+tg('auto',DBG.auto,'Auto-play me'):''}</div>
-    <h3>STACK THE NEXT CARD</h3><div class="seg" id="d-who"><button class="on" data-w="0">${camp?'You':'Player 1'}</button><button data-w="1">${camp?'Opponent':'Player 2'}</button></div>
+    <h3>ADD A CARD TO A HAND (SKIP GOES ON THE DECK)</h3><div class="seg" id="d-who"><button class="on" data-w="0">${camp?'You':'Player 1'}</button><button data-w="1">${camp?'Opponent':'Player 2'}</button></div>
     <div class="dgrid">${cards.map((c,i)=>`<button data-c="${i}">${cardHTML(c)}</button>`).join('')}</div>
     <h3>MATCH</h3><div class="dlist">
       <button data-a="win">Win this match</button><button data-a="lose">Lose this match</button>
@@ -1763,10 +1942,10 @@ function dbgPanel(){
   $('#d-off',sh).onclick=()=>{closeModal(); setDebug(false);};
   $$('[data-t]',sh).forEach(b=>b.onclick=()=>{
     const k=b.dataset.t; DBG[k]=!DBG[k]; b.classList.toggle('on',DBG[k]); setDebug(true);
-    if(k==='auto'&&G&&!G.over){ const p=G.ctrl[G.s.turn]; if(p===0&&DBG.auto){ if(G.phase==='draw') drawCard(0); else if(G.phase==='move'){ deselect(); aiPlay(); } } else if(p===0) startTurn(); }
+    if(k==='auto'&&G&&!G.over){ const p=G.ctrl[G.s.turn]; if(p===0&&DBG.auto){ if(G.phase==='play') playCard(0,aiChooseCard(0)); else if(G.phase==='move'){ deselect(); aiPlay(); } } else if(p===0) startTurn(); }
   });
   $$('[data-w]',sh).forEach(b=>b.onclick=()=>{target=+b.dataset.w; $$('[data-w]',sh).forEach(x=>x.classList.toggle('on',x===b));});
-  $$('[data-c]',sh).forEach(b=>b.onclick=()=>{ G.decks[target].draw.push({...cards[+b.dataset.c]}); sfx.flip(); renderSides(); b.animate([{transform:'scale(1.2)'},{transform:'none'}],{duration:250}); });
+  $$('[data-c]',sh).forEach(b=>b.onclick=()=>{ const c={...cards[+b.dataset.c]}; if(c.k==='skip') G.decks[target].draw.push(c); else { G.hand[target].push(c); renderHand(target); } sfx.flip(); renderSides(); b.animate([{transform:'scale(1.2)'},{transform:'none'}],{duration:250}); });
   $$('[data-a]',sh).forEach(b=>b.onclick=()=>{
     const a=b.dataset.a;
     if(a==='win'||a==='lose'){ closeModal(); endMatch(a==='win'?0:1,'mate'); return; }
@@ -1785,12 +1964,43 @@ function dbgPanel(){
     closeModal();
     G.s=st; G.ids=st.b.map((x,i)=>x?500+i:0); G.orig={}; st.b.forEach((x,i)=>{if(x) G.orig[500+i]={c:x,sq:i};}); G.lost=[[],[]]; G.caps=[[],[]]; G.last=null;
     PEL.clear(); $('#pieces').innerHTML=''; labelSquares();
-    if(G.phase==='move'||G.phase==='draw'||G.phase==='between') startTurn(); else renderAll();
+    if(['move','play','between'].includes(G.phase)) startTurn(true); else renderAll();
   });
   $$('[data-l]',sh).forEach(b=>b.onclick=()=>{ closeModal(); RUN.level=+b.dataset.l; RUN.shop=null; saveRun(); G=null; LS.del('wg.match'); startMatch('campaign',RUN.level); });
   $$('[data-j]',sh).forEach(b=>b.onclick=()=>{ const j=b.dataset.j; RUN.jokers=RUN.jokers.includes(j)?RUN.jokers.filter(x=>x!==j):RUN.jokers.concat(j); saveRun(); b.classList.toggle('on'); renderJokerBar($('#g-jokers')); sfx.joker(); });
 }
 $('#btn-dbg').onclick=()=>{ if(G) { sfx.tap(); dbgPanel(); } };
+
+/* ---------- living background: a slow swirl drawn by a tiny WebGL shader at low resolution ---------- */
+function startBG(){
+  const cv=$('#bgfx'); let gl=null;
+  try{ gl=cv.getContext('webgl',{antialias:false,alpha:false,depth:false}); }catch(e){}
+  if(!gl){ cv.remove(); return; }
+  const sh=(type,src)=>{const o=gl.createShader(type); gl.shaderSource(o,src); gl.compileShader(o); return o;};
+  const pr=gl.createProgram();
+  gl.attachShader(pr,sh(gl.VERTEX_SHADER,'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}'));
+  gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,`precision mediump float;uniform float t;uniform vec2 r;
+    void main(){vec2 uv=(gl_FragCoord.xy-.5*r)/min(r.x,r.y);float d=length(uv);
+      float a=atan(uv.y,uv.x)+d*2.6-t*.045;vec2 q=vec2(cos(a),sin(a))*d*2.3;
+      for(int i=0;i<4;i++){q+=.42*vec2(sin(q.y*1.7+t*.1+float(i)),cos(q.x*1.9-t*.08));}
+      float v=.5+.5*sin(q.x*2.3+q.y*1.5);
+      vec3 c=mix(vec3(.03,.045,.1),vec3(.075,.105,.225),v);
+      c=mix(c,vec3(.34,.24,.09),smoothstep(.84,1.,v)*.3);
+      c*=1.-.62*smoothstep(.15,1.15,d);
+      gl_FragColor=vec4(c,1.);}`));
+  gl.linkProgram(pr); if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){ cv.remove(); return; }
+  gl.useProgram(pr);
+  const buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf); gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(pr,'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  const ut=gl.getUniformLocation(pr,'t'), ur=gl.getUniformLocation(pr,'r');
+  const size=()=>{ cv.width=Math.max(2,innerWidth*.33|0); cv.height=Math.max(2,innerHeight*.33|0); gl.viewport(0,0,cv.width,cv.height); };
+  size(); addEventListener('resize',size);
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches, t0=performance.now(); let last=-1e9;
+  (function frame(now){
+    if(!document.hidden&&now-last>40){ last=now; gl.uniform1f(ut,(now-t0)/1000+40.); gl.uniform2f(ur,cv.width,cv.height); gl.drawArrays(gl.TRIANGLES,0,3); }
+    if(!still) requestAnimationFrame(frame);
+  })(t0);
+}
 /* ---------- boot ---------- */
 function boot(){
   { const d=LS.get('wg.dbg',null); if(d) Object.assign(DBG,d); if(/debug/.test(location.hash+location.search)) DBG.on=true; setDebug(DBG.on); }
@@ -1798,6 +2008,7 @@ function boot(){
   if(RUN&&RUN.v!==VER){ if(!(RUN.v>=2)) RUN.deck=baseDeck(); RUN.v=VER; saveRun(); }
   { const m=LS.get('wg.match',null); if(m&&m.v!==VER) LS.del('wg.match'); }
   initWorker();
+  startBG();
   show('title');
 }
 window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot();
