@@ -8,14 +8,14 @@ Open `index.html` in Safari (or host it anywhere, e.g. GitHub Pages) and use Sha
 
 | Card | Effect |
 | --- | --- |
-| Number (0–9) | One normal move |
-| +2 | Move two different pieces |
-| Wild +4 | Move four different pieces |
+| Number 1–4 | Move that many different pieces, one move each. The deck is weighted low (three 1s, two 2s, one 3, one 4 per color), so a turn averages 2 moves |
+| +2 / +3 | Move one piece that many times in a row. A capture ends the run |
+| Wild +4 | One piece, four moves |
 | Skip | Lose your turn (one move instead if you're in check) |
 | Reverse | The board flips: players swap armies, and the opponent moves next with the side that was to move |
 | Wild | Turn over two cards and keep one |
 
-Chess rules are standard (castling, en passant, promotion, checkmate, stalemate). In multi-move turns each piece moves at most once, and giving check ends the turn.
+Chess rules are standard (castling, en passant, promotion, checkmate, stalemate). Giving check ends your turn, and a + card run stops at a capture, so a capturing piece can always be answered.
 
 ## Modes
 
