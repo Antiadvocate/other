@@ -22,3 +22,8 @@ Chess rules are standard (castling, en passant, promotion, checkmate, stalemate)
 - **Pass & play**: two people on one phone; the top rail is rotated for the player across the table.
 
 Progress is saved in `localStorage`. The AI runs in a Web Worker so animations stay smooth while it thinks.
+
+## Testing tools
+
+- **Deck viewer**: the deck button in the top bar shows what's left in your draw pile, the odds of each card, and your average draw.
+- **Debug mode**: tap the Wild Gambit logo 5 times (or open the page with `#debug`). A green DBG button appears in matches with fast animations, instant AI, auto-play for your side, card stacking for either player, win/lose buttons, quick endgame and in-check setups, +$25, level jumping and a joker toggle list.
