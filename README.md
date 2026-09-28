@@ -12,7 +12,7 @@ You hold a hand of 3 cards. Each turn you refill to 3, then play one.
 | --- | --- |
 | Number 1–4 | Move that many different pieces, one move each (weighted to 1s and 2s) |
 | +2 / +3 / Wild +4 | Bring back up to that many of your captured pieces to their starting squares (queen counts 2; promoted pawns return as pawns). Reviving is the whole turn |
-| Reverse | The board spins and you go again: refill and play another card |
+| Reverse | The board flips and the armies swap. Your opponent moves next with your old army. Hold it and play it when you're losing; the AI does the same (Iron Grip joker blocks the opponent's) |
 | Wild | Turn over two cards and keep one |
 | Skip | Never enters your hand: drawing one costs you that turn (redrawn if you're in check) |
 
