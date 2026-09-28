@@ -314,6 +314,31 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .deckgrid .card{--cw:38px}
 .deckgrid button{border:0;background:none;padding:0}
 
+.deck-btn{width:auto;padding:0 10px 0 8px;gap:6px;display:flex;align-items:center;font:800 12px var(--f-display);font-variant-numeric:tabular-nums}
+.deck-btn::before{content:'';width:14px;height:19px;border-radius:3px;background:repeating-linear-gradient(45deg,#1a2140 0 3px,#141a33 3px 6px);box-shadow:inset 0 0 0 1.5px #d9b56b,2px -2px 0 -0.5px #0b0e1a,2px -2px 0 1px #d9b56b}
+.dbg-btn{width:auto;padding:0 9px;font:800 10px var(--f-display);color:#7ff0bd;box-shadow:inset 0 0 0 1px rgba(31,184,119,.5)}
+.odds{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.odds .or{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.odds .or .card{--cw:30px}
+.odds .bar{height:8px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden}
+.odds .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-2),var(--gold));border-radius:4px}
+.odds .or b{font:800 12px var(--f-display);font-variant-numeric:tabular-nums;min-width:74px;text-align:right}
+.odds .or b small{color:var(--dim);font-weight:700}
+.odds .or.gone{opacity:.35}
+.seg{display:flex;gap:6px;margin:8px 0}
+.seg button{flex:1;border:0;border-radius:11px;padding:10px 6px;font:700 12px var(--f-display);background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px var(--line)}
+.seg button.on{background:var(--gold);color:#241703}
+.dgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:8px 0}
+.dgrid button{border:0;background:none;padding:0;display:grid;place-items:center}
+.dgrid .card{--cw:44px}
+.dlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}
+.dlist button{border:0;border-radius:10px;padding:9px 8px;text-align:left;font:700 12px var(--f-ui);background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px var(--line)}
+.dlist button.on{box-shadow:inset 0 0 0 1.5px var(--grn);background:rgba(31,184,119,.12)}
+.sheet h3{font:700 12px var(--f-display);color:var(--gold);margin:16px 0 4px;letter-spacing:.04em}
+.fast .pc{transition-duration:.08s!important}
+.fast .ci{transition-duration:.14s!important}
+.fast #banner .bn{animation-duration:.45s!important}
+.fast .board.flipping,.fast .board.flipping .pc svg{animation-duration:.24s!important}
 @media (max-height:700px){
   .side .slot{--cw:56px}
   .side .deck{--cw:46px}
@@ -438,6 +463,8 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       <header class="topbar">
         <button class="icon-btn" id="btn-menu" aria-label="Menu"><svg><use href="#i-menu"/></svg></button>
         <div class="lvl"><b id="g-title">Wild Gambit</b><small id="g-sub"></small></div>
+        <button class="icon-btn dbg-btn" id="btn-dbg" hidden aria-label="Debug">DBG</button>
+        <button class="icon-btn deck-btn" id="btn-gdeck" aria-label="View deck"><span></span></button>
         <div class="money" id="g-money">$0</div>
       </header>
       <div class="jokers" id="g-jokers"></div>
@@ -686,7 +713,9 @@ function think(s,allowed,depth,noise,ms){
 <script>
 /* ================= Wild Gambit ================= */
 const $=(q,r=document)=>r.querySelector(q), $$=(q,r=document)=>[...r.querySelectorAll(q)];
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let DBG={on:false,fast:false,auto:false,instant:false};
+const SPD=()=>DBG.fast?.25:1;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms*SPD()));
 const rnd=n=>Math.floor(Math.random()*n);
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
 const LS={
@@ -1074,7 +1103,7 @@ $('#btn-next').onclick=()=>{ sfx.tap(); RUN.shop=null; saveRun(); show('ladder')
 /* ================= match ================= */
 const PEL=new Map();
 let SQEL=[];
-const isAI=p=>G&&G.mode==='campaign'&&p===1;
+const isAI=p=>G&&G.mode==='campaign'&&(p===1||(p===0&&DBG.auto));
 const orient=()=>G.ctrl[WHITE]===0?WHITE:BLACK;
 const sideEl=p=>$('#side-'+p);
 function vxy(sq){const f=sq&7,r=sq>>3; return orient()===WHITE?[f,7-r]:[7-f,r];}
@@ -1186,6 +1215,7 @@ function renderMarks(){
 }
 function renderSides(){
   const g=G, s=g.s, cur=g.ctrl[s.turn];
+  $('#btn-gdeck span').textContent=g.decks[g.mode==='local'?cur:0].draw.length;
   for(const p of [0,1]){
     const el=sideEl(p), color=g.ctrl[WHITE]===p?WHITE:BLACK, dk=g.decks[p];
     el.classList.toggle('active',cur===p&&!g.over);
@@ -1240,7 +1270,7 @@ async function animateDraw(p,card){
   c.style.transform=`translate(${(dr.left-sr.left)*flip}px,${(dr.top-sr.top)*flip}px) scale(${scale}) rotate(-6deg)`;
   c.getBoundingClientRect();
   sfx.flip();
-  c.style.transition='transform .5s cubic-bezier(.2,.8,.2,1)';
+  c.style.transition=`transform ${.5*SPD()}s cubic-bezier(.2,.8,.2,1)`;
   requestAnimationFrame(()=>{ c.style.transform='none'; setTimeout(()=>c.classList.remove('down'),140); });
   $('.cnt',el).textContent=G.decks[p].draw.length;
   await sleep(720);
@@ -1502,7 +1532,8 @@ function nextTurn(){
   setTimeout(()=>{ if(G===g) startTurn(); },250);
 }
 async function aiPlay(){
-  const g=G, L=LEVELS[g.lvl];
+  const g=G, p=g.ctrl[g.s.turn];
+  const L=DBG.instant||p===0?{depth:DBG.instant?1:2,noise:DBG.instant?60:20,ms:DBG.instant?60:300}:LEVELS[g.lvl];
   for(let guard=0;guard<8;guard++){
     let moves=slotMoves(); if(!moves.length) break;
     let forced=null;
@@ -1510,15 +1541,15 @@ async function aiPlay(){
       const single=new Set(legalMoves(g.s).map(m=>m.f+','+m.t+','+m.pr)), direct=moves.filter(m=>single.has(m.f+','+m.t+','+m.pr));
       if(direct.length) moves=direct; else forced=moves[0];
     }
-    setStatus(1,g.slots.length>1?`Thinking · move ${g.slotIdx+1} of ${g.slots.length}`:'Thinking…');
+    setStatus(p,g.slots.length>1?`Thinking · move ${g.slotIdx+1} of ${g.slots.length}`:'Thinking…');
     const t0=performance.now();
     const m=forced||await aiThink(g.s,moves,L.depth,L.noise,L.ms);
     if(G!==g||g.over) return;
-    const wait=Math.max(0,420-(performance.now()-t0)); if(wait) await sleep(wait);
+    const wait=Math.max(0,420*SPD()-(performance.now()-t0)); if(wait) await sleep(wait);
     if(G!==g) return;
     const res=applyMove(m);
     await sleep(380); if(G!==g) return;
-    const r=await afterMove(1,res);
+    const r=await afterMove(p,res);
     if(r!=='continue') return;
   }
   if(G===g&&g.phase==='move') endTurn();
@@ -1683,8 +1714,86 @@ $('#btn-menu').onclick=()=>{
   else $('#m-restart',sh).onclick=()=>{closeModal(); LS.del('wg.match'); startMatch('local',0)};
 };
 
+
+/* ---------- deck viewer: what's left in your draw pile and the odds of each draw ---------- */
+function viewDeck(p=0){
+  const g=G, dk=g.decks[p], left=dk.draw, all=left.concat(dk.disc, g.card[p]&&!left.includes(g.card[p])&&!dk.disc.includes(g.card[p])?[g.card[p]]:[]);
+  const total=left.length||1, groups=deckGroups(all), cnt=new Map(); for(const c of left){const k=cardKey(c); cnt.set(k,(cnt.get(k)||0)+1);}
+  const moves=left.reduce((t,c)=>t+(c.k==='num'?c.n:c.k==='plus'||c.k==='wild'?1.5:c.k==='skip'?0:1),0)/total;
+  const who=g.mode==='local'?`Player ${p+1}'s`:p===0?'Your':LEVELS[g.lvl].n+"'s";
+  const sh=openModal(`<p class="eyebrow">${who} deck</p><h2>${left.length} left to draw</h2><p>${dk.disc.length} in the discard pile. When the draw pile runs out, the discards are shuffled back in.</p>
+    <div class="odds">${groups.map(gr=>{const n=cnt.get(gr.key)||0, pct=Math.round(n/total*100);
+      return `<div class="or ${n?'':'gone'}">${cardHTML(gr.card)}<div class="bar"><i style="width:${pct}%"></i></div><b>${n}/${gr.n} <small>· ${pct}%</small></b></div>`}).join('')}</div>
+    <p>Average draw from here: <b style="color:var(--gold)">${moves.toFixed(1)} moves</b>.</p>
+    <div class="btns">${DBG.on&&g.mode==='campaign'?`<button class="btn ghost" id="m-other">${p===0?'Show opponent deck':'Show your deck'}</button>`:''}<button class="btn ghost" id="m-ok">Close</button></div>`,{dismiss:true,flip:g.mode==='local'&&p===1});
+  $('#m-ok',sh).onclick=closeModal;
+  if($('#m-other',sh)) $('#m-other',sh).onclick=()=>viewDeck(1-p);
+}
+$('#btn-gdeck').onclick=()=>{ if(!G) return; sfx.tap(); viewDeck(G.mode==='local'?G.ctrl[G.s.turn]:0); };
+
+/* ---------- debug mode: tap the logo 5 times, or open the page with #debug / ?debug ---------- */
+function setDebug(on){
+  DBG.on=on; if(!on){DBG.fast=DBG.auto=DBG.instant=false;}
+  LS.set('wg.dbg',DBG); document.body.classList.toggle('fast',DBG.fast);
+  $('#btn-dbg').hidden=!on;
+}
+let logoTaps=0,logoTimer=0;
+$('.logo').addEventListener('click',()=>{
+  logoTaps++; clearTimeout(logoTimer); logoTimer=setTimeout(()=>logoTaps=0,1200);
+  if(logoTaps>=5){ logoTaps=0; setDebug(!DBG.on); sfx.joker(); banner(DBG.on?'Debug on':'Debug off','green','Tap the logo 5 times to toggle'); renderTitle(); }
+});
+function dbgPanel(){
+  const g=G, camp=g&&g.mode==='campaign';
+  const cards=[{c:'r',k:'num',n:1},{c:'y',k:'num',n:2},{c:'g',k:'num',n:3},{c:'b',k:'num',n:4},{c:'y',k:'plus',n:2},{c:'r',k:'plus',n:3},{c:'w',k:'plus',n:4},{c:'g',k:'skip'},{c:'b',k:'rev'},{c:'w',k:'wild'}];
+  let target=0;
+  const tg=(id,on,label)=>`<button class="${on?'on':''}" data-t="${id}">${label}</button>`;
+  const sh=openModal(`<p class="eyebrow">Debug</p><h2>Test tools</h2>
+    <h3>SPEED</h3><div class="seg">${tg('fast',DBG.fast,'Fast anims')}${camp?tg('instant',DBG.instant,'Instant AI')+tg('auto',DBG.auto,'Auto-play me'):''}</div>
+    <h3>STACK THE NEXT CARD</h3><div class="seg" id="d-who"><button class="on" data-w="0">${camp?'You':'Player 1'}</button><button data-w="1">${camp?'Opponent':'Player 2'}</button></div>
+    <div class="dgrid">${cards.map((c,i)=>`<button data-c="${i}">${cardHTML(c)}</button>`).join('')}</div>
+    <h3>MATCH</h3><div class="dlist">
+      <button data-a="win">Win this match</button><button data-a="lose">Lose this match</button>
+      <button data-a="endgame">Quick endgame</button><button data-a="check">Put me in check</button>
+      ${camp?'<button data-a="money">+$25</button><button data-a="lost">Fill my captured pieces</button>':''}
+    </div>
+    ${camp?`<h3>JUMP TO LEVEL</h3><div class="seg">${LEVELS.map((l,i)=>`<button data-l="${i}" class="${i===g.lvl?'on':''}">${i+1}</button>`).join('')}</div>
+    <h3>JOKERS (TAP TO ADD / REMOVE, NO SLOT LIMIT)</h3><div class="dlist">${Object.keys(JOKERS).map(j=>`<button data-j="${j}" class="${RUN.jokers.includes(j)?'on':''}">${JOKERS[j].g} ${JOKERS[j].n}</button>`).join('')}</div>`:''}
+    <div class="btns"><button class="btn ghost" id="d-off">Turn debug off</button><button class="btn" id="m-ok">Close</button></div>`,{dismiss:true});
+  $('#m-ok',sh).onclick=closeModal;
+  $('#d-off',sh).onclick=()=>{closeModal(); setDebug(false);};
+  $$('[data-t]',sh).forEach(b=>b.onclick=()=>{
+    const k=b.dataset.t; DBG[k]=!DBG[k]; b.classList.toggle('on',DBG[k]); setDebug(true);
+    if(k==='auto'&&G&&!G.over){ const p=G.ctrl[G.s.turn]; if(p===0&&DBG.auto){ if(G.phase==='draw') drawCard(0); else if(G.phase==='move'){ deselect(); aiPlay(); } } else if(p===0) startTurn(); }
+  });
+  $$('[data-w]',sh).forEach(b=>b.onclick=()=>{target=+b.dataset.w; $$('[data-w]',sh).forEach(x=>x.classList.toggle('on',x===b));});
+  $$('[data-c]',sh).forEach(b=>b.onclick=()=>{ G.decks[target].draw.push({...cards[+b.dataset.c]}); sfx.flip(); renderSides(); b.animate([{transform:'scale(1.2)'},{transform:'none'}],{duration:250}); });
+  $$('[data-a]',sh).forEach(b=>b.onclick=()=>{
+    const a=b.dataset.a;
+    if(a==='win'||a==='lose'){ closeModal(); endMatch(a==='win'?0:1,'mate'); return; }
+    if(a==='money'){ addMoney(25); return; }
+    if(a==='lost'){ const col=G.ctrl[WHITE]===0?WHITE:BLACK; G.lost[col].push(...[QUEEN,ROOK,ROOK,KNIGHT,BISHOP,PAWN].map((t,i)=>({c:pc(col,t),sq:col===WHITE?[3,0,7,1,2,8][i]:[59,56,63,57,58,48][i],cap:pc(col,t)}))); sfx.coin(); return; }
+    // board setups keep the current armies: you are whichever color player 0 controls
+    const me=G.ctrl[WHITE]===0?WHITE:BLACK, them=me^1;
+    let fen;
+    if(a==='endgame') fen='6k1/5ppp/8/8/8/8/5PPP/3QR1K1';
+    else fen='6k1/5ppp/8/8/8/8/5PPP/4r1K1';
+    let st=fromFEN(fen+(me===WHITE?' w':' b')+' - -');
+    if(me===BLACK){ // mirror so player 0 still has the strong side
+      const b2=new Array(64).fill(0); st.b.forEach((x,i)=>{ if(x) b2[(7-(i>>3))*8+(i&7)]=x^8; }); st.b=b2; st.kings=[st.kings[1],st.kings[0]].map(k=>(7-(k>>3))*8+(k&7));
+    }
+    st.turn=me;
+    closeModal();
+    G.s=st; G.ids=st.b.map((x,i)=>x?500+i:0); G.orig={}; st.b.forEach((x,i)=>{if(x) G.orig[500+i]={c:x,sq:i};}); G.lost=[[],[]]; G.caps=[[],[]]; G.last=null;
+    PEL.clear(); $('#pieces').innerHTML=''; labelSquares();
+    if(G.phase==='move'||G.phase==='draw'||G.phase==='between') startTurn(); else renderAll();
+  });
+  $$('[data-l]',sh).forEach(b=>b.onclick=()=>{ closeModal(); RUN.level=+b.dataset.l; RUN.shop=null; saveRun(); G=null; LS.del('wg.match'); startMatch('campaign',RUN.level); });
+  $$('[data-j]',sh).forEach(b=>b.onclick=()=>{ const j=b.dataset.j; RUN.jokers=RUN.jokers.includes(j)?RUN.jokers.filter(x=>x!==j):RUN.jokers.concat(j); saveRun(); b.classList.toggle('on'); renderJokerBar($('#g-jokers')); sfx.joker(); });
+}
+$('#btn-dbg').onclick=()=>{ if(G) { sfx.tap(); dbgPanel(); } };
 /* ---------- boot ---------- */
 function boot(){
+  { const d=LS.get('wg.dbg',null); if(d) Object.assign(DBG,d); if(/debug/.test(location.hash+location.search)) DBG.on=true; setDebug(DBG.on); }
   // saves from before the 1–4 number deck: rebuild the deck, drop any half-played match
   if(RUN&&RUN.v!==VER){ if(!(RUN.v>=2)) RUN.deck=baseDeck(); RUN.v=VER; saveRun(); }
   { const m=LS.get('wg.match',null); if(m&&m.v!==VER) LS.del('wg.match'); }
