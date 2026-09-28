@@ -9,13 +9,12 @@ Open `index.html` in Safari (or host it anywhere, e.g. GitHub Pages) and use Sha
 | Card | Effect |
 | --- | --- |
 | Number 1–4 | Move that many different pieces, one move each. The deck is weighted low (three 1s, two 2s, one 3, one 4 per color), so a turn averages 2 moves |
-| +2 / +3 | Move one piece that many times in a row. A capture ends the run |
-| Wild +4 | One piece, four moves |
+| +2 / +3 / Wild +4 | Bring back up to that many of your captured pieces, to their starting squares (nearest free back-rank square if taken). A queen counts as 2; a promoted pawn returns as a pawn. Reviving is the whole turn. With nothing to revive, or while in check, it plays as a 1 |
 | Skip | Lose your turn (one move instead if you're in check) |
 | Reverse | The board flips: players swap armies, and the opponent moves next with the side that was to move |
 | Wild | Turn over two cards and keep one |
 
-Chess rules are standard (castling, en passant, promotion, checkmate, stalemate). Giving check ends your turn, and a + card run stops at a capture, so a capturing piece can always be answered.
+Chess rules are standard (castling, en passant, promotion, checkmate, stalemate). Each piece moves at most once per turn, and giving check ends the turn.
 
 ## Modes
 

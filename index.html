@@ -96,6 +96,15 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .pc.die svg{animation:die .42s ease-in forwards}
 @keyframes die{to{opacity:0;transform:scale(.2) rotate(40deg)}}
 .pc.promo svg{animation:promo .6s ease}
+.pc.revive svg{animation:revive .8s cubic-bezier(.2,.8,.2,1)}
+@keyframes revive{0%{opacity:0;transform:translateY(-60%) scale(.3)}55%{opacity:1;transform:scale(1.25);filter:drop-shadow(0 0 14px #ffd97a)}100%{transform:none}}
+.rv{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.rv button{position:relative;aspect-ratio:1;border:0;border-radius:16px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1.5px var(--line);padding:6px;transition:transform .15s,box-shadow .2s}
+.rv button svg{width:100%;height:100%}
+.rv button.on{background:rgba(240,192,96,.18);box-shadow:inset 0 0 0 2px var(--gold),0 0 18px rgba(240,192,96,.35)}
+.rv button[disabled]{opacity:.3}
+.rv button i{position:absolute;right:5px;top:5px;font:800 10px/1 var(--f-display);font-style:normal;color:var(--gold)}
+.budget{font:800 13px var(--f-display);color:var(--gold)}
 @keyframes promo{40%{transform:scale(1.4);filter:drop-shadow(0 0 12px #ffd97a)}}
 .board.flipping{animation:bflip 1s cubic-bezier(.65,0,.3,1) forwards}
 .board.flipping .pc svg{animation:pflip 1s cubic-bezier(.65,0,.3,1) forwards}
@@ -166,7 +175,6 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .row{display:flex;align-items:center;gap:8px;min-height:30px}
 .pips{display:flex;gap:5px;flex:1;flex-wrap:wrap}
 .pip{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font:800 11px var(--f-display);background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px var(--line);color:var(--dim);transition:all .25s}
-.pip.chain{border-radius:50%}
 .pip.cur{background:var(--gold);color:#241703;box-shadow:0 0 14px rgba(240,192,96,.6)}
 .pip.done{background:rgba(31,184,119,.25);color:#7ff0bd}
 .endturn{font:700 11px/1 var(--f-display);border:0;border-radius:11px;padding:9px 12px;background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px var(--line)}
@@ -769,20 +777,20 @@ const JOKERS={
   wildheart:{n:'Wild Heart',r:1,c:4,g:'✦',d:'Wild cards show 3 choices instead of 2.'},
   speedrun:{n:'Blitz',r:1,c:5,g:'»',d:'Win within 20 of your turns: +$6.'},
   taxman:{n:'Tax Collector',r:1,c:4,g:'¢',d:'At a win, +$1 for every 3 pieces you still have.'},
-  doubledown:{n:'Double Down',r:2,c:7,g:'++',d:'Your + cards give one extra move.'},
+  doubledown:{n:'Double Down',r:2,c:7,g:'++',d:'Your + cards revive one extra piece.'},
   bounty:{n:'Bounty Hunter',r:2,c:6,g:'♛',d:'Earn $4 when you capture a rook or queen.'},
   redtide:{n:'Red Tide',r:2,c:6,g:'R+',d:'Red number cards move one extra piece.'},
-  lucky7:{n:'Follow Through',r:2,c:7,g:'↠',d:'A capture no longer ends your + card run.'},
+  lucky7:{n:'Second Wind',r:2,c:7,g:'↺',d:'After you revive pieces, you also get one move.'},
   mulligan:{n:'Mulligan',r:2,c:6,g:'↻',d:'When you draw a Skip, draw again.'},
   anchor:{n:'Anchor',r:2,c:6,g:'↓',d:'When you draw a Reverse, draw again.'},
   saboteur:{n:'Saboteur',r:2,c:6,g:'✕',d:"Opponent's deck gets 3 extra Skips."},
   coronation:{n:'Coronation',r:2,c:5,g:'♕',d:'Promoting a pawn earns $6.'},
   banker:{n:'Banker',r:2,c:6,g:'%',d:'Interest cap goes from $5 to $10.'},
-  jammer:{n:'Jammer',r:3,c:9,g:'÷',d:"Opponent's + cards give only 1 move."},
+  jammer:{n:'Jammer',r:3,c:9,g:'÷',d:"Opponent's + cards revive only 1 piece."},
   pawnstorm:{n:'Pawn Storm',r:3,c:10,g:'♙♙',d:'Every turn, get an extra pawn move.'},
   bloodlust:{n:'Bloodlust',r:3,c:9,g:'+1',d:'Your first capture each turn earns an extra move.'},
   ironwall:{n:'Iron Wall',r:3,c:8,g:'♖',d:"Opponent's first card each match is a Skip."},
-  fate:{n:'Hand of Fate',r:3,c:8,g:'+4',d:'Your first card each match is a Wild +4.'},
+  fate:{n:'Hand of Fate',r:3,c:8,g:'4',d:'Your first card each match is a 4.'},
 };
 const MAXJ=5;
 function jokerHTML(id){const J=JOKERS[id];return `<div class="jk r${J.r}" data-j="${id}" role="button" aria-label="${J.n}"><span class="jg">${J.g}</span><span class="jn">${J.n}</span></div>`}
@@ -791,7 +799,7 @@ const has=id=>!!(G&&G.mode==='campaign'&&RUN&&RUN.jokers.includes(id));
 /* ---------- campaign ---------- */
 const RULES={
   mirror:{n:'Hall of Mirrors',d:'Both decks get 2 extra Reverse cards.'},
-  heavy:{n:'Heavy Hand',d:"Opponent's + cards give one extra move."},
+  heavy:{n:'Heavy Hand',d:"Opponent's + cards revive one extra piece."},
   armory:{n:'Armory',d:"Opponent's c- and f-pawns start as knights."},
   silence:{n:'Silence',d:'Your Wild cards become a single move.'},
   stacked:{n:'Stacked Deck',d:"Opponent's deck gets 4 extra number 3s."},
@@ -808,7 +816,7 @@ const LEVELS=[
   {n:'The Grandmaster',t:'Final boss',m:'GM',a:'#f0c060',depth:5,noise:0,ms:1500,rule:'pure'},
 ];
 const reward=i=>4+i;
-const VER=2;
+const VER=3;
 function newRun(){ RUN={v:VER,money:4,level:0,jokers:[],deck:baseDeck(),shop:null}; META.runs++; LS.set('wg.meta',META); saveRun(); }
 function saveRun(){ if(RUN) LS.set('wg.run',RUN); else LS.del('wg.run'); }
 
@@ -935,14 +943,13 @@ function showRules(){
   <p>Standard chess: same pieces, same moves, checkmate wins. The twist: at the start of every turn you tap your deck and draw a card. The card decides your turn.</p>
   <dl>
     <dt>${C({c:'r',k:'num',n:3})}</dt><dd><b>Number card (1–4).</b> Move that many <b>different</b> pieces, one move each. Most cards are 1s and 2s.</dd>
-    <dt>${C({c:'y',k:'plus',n:2})}</dt><dd><b>+2 / +3.</b> Move <b>one</b> piece that many times in a row. A capture ends the run.</dd>
-    <dt>${C({c:'w',k:'plus',n:4})}</dt><dd><b>Wild +4.</b> One piece, four moves.</dd>
+    <dt>${C({c:'y',k:'plus',n:2})}</dt><dd><b>+2 / +3 / +4.</b> Bring back up to that many of your captured pieces, to their starting squares. A queen counts as 2. Reviving is your whole turn. With nothing to revive, or while in check, it plays as a 1.</dd>
     <dt>${C({c:'g',k:'skip'})}</dt><dd><b>Skip.</b> You lose your turn. If you're in check, you get one move instead.</dd>
     <dt>${C({c:'b',k:'rev'})}</dt><dd><b>Reverse.</b> The board flips. You and your opponent swap armies, and your opponent moves next with the side that was about to move.</dd>
     <dt>${C({c:'w',k:'wild'})}</dt><dd><b>Wild.</b> Turn over two cards from your deck and keep the one you want.</dd>
   </dl>
   <h3>Multi-move turns</h3>
-  <p>Giving check ends your turn on the spot. On number cards each piece moves once; on + cards a capture ends the run, so it can always be answered. After your first move you can end the turn early.</p>
+  <p>Each piece moves once per turn, and giving check ends your turn on the spot. After your first move you can end the turn early.</p>
   <h3>The run</h3>
   <p>Climb a ladder of 8 opponents. Each win pays cash plus $1 interest per $5 you hold (up to $5). Spend it in the Back Room on jokers that bend the rules, and on trimming or stacking your deck. Lose once and the run is over.</p>
   <div class="btns"><button class="btn" id="m-ok">Got it</button></div></div>`,{dismiss:true});
@@ -1010,9 +1017,9 @@ function renderShop(){
   const rr=$('#btn-reroll'); rr.textContent=`Reroll $${S.reroll}`; rr.disabled=RUN.money<S.reroll;
   const svcs=[
     {id:'burn',card:{c:'g',k:'skip'},n:'Burn a card',d:'Cut a Skip or a 1',cost:3},
-    {id:'add2',card:{c:'y',k:'plus',n:2},n:'Add a +2',d:'One piece, 2 moves',cost:4},
+    {id:'add2',card:{c:'y',k:'plus',n:2},n:'Add a +2',d:'Revive 2 pieces',cost:4},
     {id:'addw',card:{c:'w',k:'wild'},n:'Add a Wild',d:'Pick 1 of 2',cost:5},
-    {id:'add4',card:{c:'w',k:'plus',n:4},n:'Add a Wild +4',d:'One piece, 4 moves',cost:8},
+    {id:'add4',card:{c:'w',k:'plus',n:4},n:'Add a Wild +4',d:'Revive 4 pieces',cost:7},
   ];
   $('#services').innerHTML=svcs.map(s=>`<button class="svc" data-svc="${s.id}" ${S.svc[s.id]||RUN.money<s.cost?'disabled':''}>${cardHTML(s.card)}<span><b>${s.n}</b><small>${S.svc[s.id]?'Done this visit':s.d}</small><em>$${s.cost}</em></span></button>`).join('');
   $('#owned-lbl').textContent=`Your jokers ${RUN.jokers.length}/${MAXJ}`;
@@ -1030,7 +1037,7 @@ $('#offers').addEventListener('click',e=>{
 $('#btn-reroll').onclick=()=>{ const S=RUN.shop; if(RUN.money<S.reroll) return; RUN.money-=S.reroll; S.reroll++; S.offers=genOffers(); S.sold=[]; saveRun(); sfx.flip(); renderShop(); };
 $('#services').addEventListener('click',e=>{
   const b=e.target.closest('[data-svc]'); if(!b) return; const id=b.dataset.svc, S=RUN.shop; sfx.tap();
-  const cost={burn:3,add2:4,addw:5,add4:8}[id];
+  const cost={burn:3,add2:4,addw:5,add4:7}[id];
   if(RUN.money<cost||S.svc[id]) return;
   if(id==='burn'){
     const gs=deckGroups(RUN.deck);
@@ -1067,16 +1074,17 @@ function vsq(x,y){return orient()===WHITE?(7-y)*8+x:y*8+(7-x);}
 function startMatch(mode,lvl){
   const L=mode==='campaign'?LEVELS[lvl]:null, rule=L?L.rule:null;
   const s=newState(rule==='armory');
-  const ids=s.b.map((p,i)=>p?i+1:0);
+  const ids=s.b.map((p,i)=>p?i+1:0), orig={};
+  s.b.forEach((p,i)=>{ if(p) orig[i+1]={c:p,sq:i}; });
   let d0=mode==='campaign'?RUN.deck.map(c=>({...c})):baseDeck();
   let d1=baseDeck();
   if(rule==='mirror'){ d0.push({c:'r',k:'rev'},{c:'y',k:'rev'}); d1.push({c:'r',k:'rev'},{c:'y',k:'rev'}); }
   if(rule==='stacked') COLORS.forEach(c=>d1.push({c,k:'num',n:3}));
   if(rule==='pure') d1=d1.filter(c=>c.k!=='skip'&&c.k!=='rev');
   G={mode,lvl,rule,s,ids,ctrl:[0,1],decks:[{draw:shuffle(d0),disc:[]},{draw:shuffle(d1),disc:[]}],card:[null,null],
-     phase:'init',slots:[],slotIdx:0,used:[],cont:false,pendingEp:-1,blood:false,turnNo:0,myTurns:0,caps:[[],[]],last:null,over:false};
+     phase:'init',slots:[],slotIdx:0,used:[],cont:false,pendingEp:-1,blood:false,turnNo:0,myTurns:0,caps:[[],[]],lost:[[],[]],orig,nextId:100,last:null,over:false};
   if(has('saboteur')) for(let i=0;i<3;i++) G.decks[1].draw.splice(rnd(G.decks[1].draw.length+1),0,{c:COLORS[i],k:'skip'});
-  if(has('fate')) G.decks[0].draw.push({c:'w',k:'plus',n:4});
+  if(has('fate')) G.decks[0].draw.push({c:'r',k:'num',n:4});
   if(has('ironwall')) G.decks[1].draw.push({c:'r',k:'skip'});
   enterGame();
   const intro=mode==='campaign'?[L.n,rule?RULES[rule].n+': '+RULES[rule].d:L.t]:['Pass & play','White draws first'];
@@ -1119,7 +1127,7 @@ function buildSide(p){
   $('.slot',el).addEventListener('click',()=>{ const c=G&&G.card[p]; if(c){ banner(cardName(c),'nf',describeCard(c)); } });
   const c=G.card[p]; if(c) $('.slot',el).appendChild(cardEl(c,'used-card'));
 }
-function describeCard(c){ return c.k==='num'?(c.n===1?'One move':`${c.n} pieces, one move each`):c.k==='plus'?`One piece, ${c.n} moves`:{skip:'Lose the turn',rev:'Board flips',wild:'Pick one of two'}[c.k]; }
+function describeCard(c){ return c.k==='num'?(c.n===1?'One move':`${c.n} pieces, one move each`):c.k==='plus'?`Revive up to ${c.n} lost piece${c.n>1?'s':''}`:{skip:'Lose the turn',rev:'Board flips',wild:'Pick one of two'}[c.k]; }
 function cardKey(c){ return c.k==='num'?'num'+c.n:c.k==='plus'?'plus'+c.n:c.k; }
 function sizeBoard(){
   const w=$('#board-wrap'); if(!w||!w.clientWidth) return;
@@ -1143,7 +1151,7 @@ function labelSquares(){
 }
 const SYM='pnbrqk';
 function renderPieces(){
-  const g=G, s=g.s, layer=$('#pieces'), seen=new Set(), sl=g.slots[g.slotIdx], restricted=g.phase==='move'&&!isAI(g.ctrl[s.turn])&&sl&&(sl.t||(sl.chain&&g.chainId));
+  const g=G, s=g.s, layer=$('#pieces'), seen=new Set(), sl=g.slots[g.slotIdx], restricted=g.phase==='move'&&!isAI(g.ctrl[s.turn])&&sl&&sl.t;
   const movable=restricted?new Set(slotMoves().map(m=>m.f)):null;
   for(let sq=0;sq<64;sq++){
     const id=g.ids[sq]; if(!id) continue; seen.add(id);
@@ -1151,7 +1159,7 @@ function renderPieces(){
     if(!el){el=document.createElement('div'); el.className='pc'; layer.appendChild(el); PEL.set(id,el);}
     if(el.dataset.sym!==sym){ const was=el.dataset.sym; el.dataset.sym=sym; el.innerHTML=`<svg viewBox="0 0 100 100" class="${sym[0]==='w'?'pw':'pb'}"><use href="#s-${sym[1]}"/></svg>`; if(was){el.classList.remove('promo'); void el.offsetWidth; el.classList.add('promo');} }
     if(!el.classList.contains('drag')){ const [x,y]=vxy(sq); el.style.transform=`translate(${x*100}%,${y*100}%)`; }
-    el.classList.toggle('used',g.phase==='move'&&g.used.includes(id)&&!(sl&&sl.chain&&id===g.chainId));
+    el.classList.toggle('used',g.phase==='move'&&g.used.includes(id));
     el.classList.toggle('hint',!!(movable&&movable.has(sq)));
   }
   for(const [id,el] of PEL) if(!seen.has(id)&&!el.classList.contains('die')){el.remove(); PEL.delete(id);}
@@ -1178,7 +1186,7 @@ function renderSides(){
     $('.caps',el).innerHTML=caps.map(x=>`<svg viewBox="0 0 100 100" class="${pcol(x)===WHITE?'pw':'pb'}"><use href="#s-${SYM[ptyp(x)-1]}"/></svg>`).join('')+(adv>0?`<span class="adv">+${adv}</span>`:'');
     const pips=$('.pips',el), et=$('.endturn',el);
     if(cur===p&&g.phase==='move'&&g.slots.length>1){
-      pips.innerHTML=g.slots.map((sl,i)=>`<span class="pip ${sl.chain?'chain':''} ${i<g.slotIdx?'done':i===g.slotIdx?'cur':''}">${sl.t?(sl.t===PAWN?'♙':'♘'):i+1}</span>`).join('');
+      pips.innerHTML=g.slots.map((sl,i)=>`<span class="pip ${i<g.slotIdx?'done':i===g.slotIdx?'cur':''}">${sl.t?(sl.t===PAWN?'♙':'♘'):i+1}</span>`).join('');
     } else pips.innerHTML='';
     et.hidden=!(cur===p&&g.phase==='move'&&!isAI(p)&&g.slotIdx>0&&g.slotIdx<g.slots.length);
   }
@@ -1196,7 +1204,7 @@ function takeCard(p){
 async function startTurn(){
   const g=G; if(!g||g.over) return;
   const s=g.s, side=s.turn, p=g.ctrl[side];
-  g.phase='draw'; g.slots=[]; g.slotIdx=0; g.used=[]; g.chainId=0; g.blood=false; g.cont=false; g.sel=null; g.targets=null;
+  g.phase='draw'; g.slots=[]; g.slotIdx=0; g.used=[]; g.blood=false; g.cont=false; g.sel=null; g.targets=null;
   const legal=legalMoves(s);
   renderAll();
   if(!legal.length) return endMatch(inCheck(s,side)?1-p:-1,inCheck(s,side)?'mate':'stalemate');
@@ -1256,7 +1264,7 @@ function chooseCard(opts,p){
 }
 function aiPickWild(opts){
   const mine=evaluate(G.s);
-  const score=c=>c.k==='rev'?(mine<-250?50:-20):c.k==='skip'?(inCheck(G.s,G.s.turn)?1:-30):c.k==='plus'?c.n+(G.rule==='heavy'?1:0):c.n;
+  const score=c=>c.k==='rev'?(mine<-250?50:-20):c.k==='skip'?(inCheck(G.s,G.s.turn)?1:-30):c.k==='plus'?(G.lost[G.s.turn].length?1.5+c.n*.5:1):c.n;
   let bi=0; opts.forEach((c,i)=>{ if(score(c)>score(opts[bi])) bi=i; }); return bi;
 }
 async function resolveCard(p,card){
@@ -1294,44 +1302,103 @@ async function resolveCard(p,card){
     await sleep(350);
     return nextTurn();
   }
-  // number card: n different pieces, one move each. + card: one piece, n moves in a row.
-  let n=card.n||1; const chain=card.k==='plus';
-  if(!chain&&you){
-    if(has('redtide')&&card.c==='r'){n++; fireJoker('redtide','+1 piece');}
-    if(has('zerohour')&&card.n===1){fireJoker('zerohour'); addMoney(2);}
-  } else if(chain){
-    if(you&&has('doubledown')){n++; fireJoker('doubledown','+1 move');}
+  if(card.k==='plus'){
+    let n=card.n;
+    if(you&&has('doubledown')){n++; fireJoker('doubledown','+1');}
     if(camp&&p===1&&g.rule==='heavy') n++;
     if(camp&&p===1&&has('jammer')){n=1; fireJoker('jammer','Jammed');}
+    return revive(p,n);
   }
-  const slots=Array.from({length:n},()=>({t:0,chain:chain&&n>1}));
+  // number card: n different pieces, one move each
+  let n=card.n||1;
+  if(you){
+    if(has('redtide')&&card.c==='r'){n++; fireJoker('redtide','+1 piece');}
+    if(has('zerohour')&&card.n===1){fireJoker('zerohour'); addMoney(2);}
+  }
+  const slots=Array.from({length:n},()=>({t:0}));
   if(you){
     if(has('blueblood')&&card.c==='b'){slots.push({t:PAWN}); fireJoker('blueblood','+♙');}
     if(has('cavalry')&&card.c==='y'){slots.push({t:KNIGHT}); fireJoker('cavalry','+♘');}
     if(has('pawnstorm')){slots.push({t:PAWN}); fireJoker('pawnstorm','+♙');}
   }
-  if(chain&&n>1){ banner('+'+n,'gold',`One piece, ${n} moves`); sfx.plus(); await sleep(800); if(G!==g) return; }
-  else if(slots.length>2){ sfx.plus(); }
+  if(slots.length>2) sfx.plus();
   beginMoves(p,slots);
+}
+/* ---------- + cards: revive lost pieces ---------- */
+const reviveCost=e=>ptyp(e.c)===QUEEN?2:1;
+// starting square if empty, else the nearest empty square on the back two ranks (pawns: their own rank)
+function reviveSquare(e,b){
+  if(!b[e.sq]) return e.sq;
+  const c=pcol(e.c), ranks=ptyp(e.c)===PAWN?[c===WHITE?1:6]:(c===WHITE?[0,1]:[7,6]);
+  let best=-1,bd=99;
+  for(const r of ranks) for(let f=0;f<8;f++){ const q=r*8+f; if(b[q]) continue; const d=Math.abs(f-(e.sq&7))+Math.abs(r-(e.sq>>3))*.5; if(d<bd){bd=d;best=q} }
+  return best;
+}
+function chooseRevive(p,lost,n){
+  return new Promise(res=>{
+    const order=lost.map((e,i)=>i).sort((a,b)=>PVAL[ptyp(lost[b].c)]-PVAL[ptyp(lost[a].c)]);
+    const pick=new Set();
+    const sh=openModal(`<p class="eyebrow">+${n} card</p><h2>Bring pieces back</h2><p>They return to their starting squares. A queen counts as 2.</p>
+      <div class="budget" id="rv-b"></div><div class="rv">${order.map(i=>{const e=lost[i];return `<button data-i="${i}" aria-label="${['','Pawn','Knight','Bishop','Rook','Queen'][ptyp(e.c)]}"><svg viewBox="0 0 100 100" class="${pcol(e.c)===WHITE?'pw':'pb'}"><use href="#s-${SYM[ptyp(e.c)-1]}"/></svg>${reviveCost(e)>1?'<i>2</i>':''}</button>`}).join('')}</div>
+      <div class="btns"><button class="btn" id="rv-go" disabled>Bring back</button></div>`,{flip:G.mode==='local'&&p===1});
+    const upd=()=>{
+      const used=[...pick].reduce((t,i)=>t+reviveCost(lost[i]),0);
+      $('#rv-b',sh).textContent=`${n-used} of ${n} left`;
+      $$('[data-i]',sh).forEach(b=>{const i=+b.dataset.i; b.classList.toggle('on',pick.has(i)); b.disabled=!pick.has(i)&&used+reviveCost(lost[i])>n;});
+      $('#rv-go',sh).disabled=!pick.size;
+    };
+    $$('[data-i]',sh).forEach(b=>b.onclick=()=>{const i=+b.dataset.i; pick.has(i)?pick.delete(i):pick.add(i); sfx.tap(); upd();});
+    $('#rv-go',sh).onclick=()=>{closeModal(); res([...pick]);};
+    upd();
+  });
+}
+function aiRevive(lost,n){
+  const out=[]; let left=n;
+  lost.map((e,i)=>i).sort((a,b)=>PVAL[ptyp(lost[b].c)]-PVAL[ptyp(lost[a].c)]).forEach(i=>{ const c=reviveCost(lost[i]); if(c<=left){out.push(i); left-=c;} });
+  return out;
+}
+async function revive(p,n){
+  const g=G, s=g.s, col=s.turn, lost=g.lost[col], you=g.mode==='campaign'&&p===0;
+  const can=lost.some(e=>reviveSquare(e,s.b)>=0);
+  if(!can||inCheck(s,col)){
+    banner('+'+n,'gold',inCheck(s,col)?'In check: one move instead':'Nothing to revive: one move');
+    await sleep(900); if(G!==g) return;
+    return beginMoves(p,[{t:0}]);
+  }
+  banner('+'+n,'gold',`Revive up to ${n}`); sfx.plus();
+  await sleep(isAI(p)?900:500); if(G!==g) return;
+  const picks=isAI(p)?aiRevive(lost,n):await chooseRevive(p,lost,n);
+  if(G!==g) return;
+  const entries=picks.map(i=>lost[i]);
+  for(const e of entries){
+    const sq=reviveSquare(e,s.b); if(sq<0) continue;
+    s.b[sq]=e.c; const id=g.nextId++; g.ids[sq]=id; g.orig[id]={c:e.c,sq:e.sq};
+    lost.splice(lost.indexOf(e),1);
+    for(const cl of g.caps){ const k=cl.indexOf(e.cap); if(k>=0){ cl.splice(k,1); break; } }
+    renderAll();
+    const el=PEL.get(id); if(el) el.classList.add('revive');
+    const [x,y]=screenOf(sq); sparks(x,y,['#f0c060','#fff','#ffd97a']); sfx.move();
+    await sleep(420); if(G!==g) return;
+  }
+  if(you&&has('lucky7')){ fireJoker('lucky7','+1 move'); return beginMoves(p,[{t:0}]); }
+  s.turn^=1; s.ep=-1;
+  if(inCheck(s,s.turn)){ banner('Check','red'); sfx.check(); await sleep(500); }
+  nextTurn();
 }
 function slotMoves(){
   const g=G, s=g.s, sl=g.slots[g.slotIdx]; if(!sl) return [];
-  return legalMoves(s).filter(m=>{
-    const id=g.ids[m.f];
-    if(sl.chain&&g.chainId) return id===g.chainId;
-    return !g.used.includes(id)&&(!sl.t||ptyp(s.b[m.f])===sl.t);
-  });
+  return legalMoves(s).filter(m=>!g.used.includes(g.ids[m.f])&&(!sl.t||ptyp(s.b[m.f])===sl.t));
 }
 function seekSlot(){ while(G.slotIdx<G.slots.length){ if(slotMoves().length) return true; G.slotIdx++; } return false; }
 function beginMoves(p,slots){
-  const g=G; g.phase='move'; g.slots=slots; g.slotIdx=0; g.used=[]; g.chainId=0; g.cont=false;
+  const g=G; g.phase='move'; g.slots=slots; g.slotIdx=0; g.used=[]; g.cont=false;
   if(!seekSlot()) return endTurn();
   saveMatch(); renderAll();
   if(isAI(p)) aiPlay(); else humanPrompt();
 }
 function humanPrompt(){
   const g=G, p=g.ctrl[g.s.turn], sl=g.slots[g.slotIdx], tot=g.slots.length;
-  const what=sl.t===PAWN?'a pawn':sl.t===KNIGHT?'a knight':sl.chain?(g.chainId?'the same piece again':'pick the piece to run with'):g.slotIdx?'a different piece':'any piece';
+  const what=sl.t===PAWN?'a pawn':sl.t===KNIGHT?'a knight':g.slotIdx?'a different piece':'any piece';
   setStatus(p,tot>1?`Move <em>${g.slotIdx+1} of ${tot}</em>: ${what}`:`Make your move`);
   renderSides(); renderPieces();
 }
@@ -1339,8 +1406,6 @@ async function afterMove(p,res){
   const g=G, s=g.s, camp=g.mode==='campaign', you=camp&&p===0, us=s.turn^1;
   g.cont=false; // the move just made already passed the turn; only re-open it below if moves remain
   g.used.push(res.id);
-  const sl=g.slots[g.slotIdx]||{};
-  if(sl.chain) g.chainId=res.id;
   if(res.captured&&you){
     const [x,y]=screenOf(res.capSq);
     if(has('pickpocket')){ fireJoker('pickpocket'); addMoney(1,x,y); }
@@ -1349,9 +1414,6 @@ async function afterMove(p,res){
   }
   if(res.promo&&you&&has('coronation')){ const [x,y]=screenOf(res.to); fireJoker('coronation'); addMoney(6,x,y); }
   g.slotIdx++;
-  // a capture ends a + card run (unless Follow Through), so a capturing piece can always be answered
-  if(sl.chain&&res.captured&&!(you&&has('lucky7'))){ const had=g.slotIdx<g.slots.length&&g.slots[g.slotIdx].chain; while(g.slotIdx<g.slots.length&&g.slots[g.slotIdx].chain) g.slotIdx++; if(had) setStatus(p,'Capture ends the run'); }
-  else if(sl.chain&&res.captured&&g.slotIdx<g.slots.length&&g.slots[g.slotIdx].chain) fireJoker('lucky7','Keep going');
   if(inCheck(s,s.turn)){
     sfx.check(); $('#board-wrap').classList.remove('shake'); void $('#board-wrap').offsetWidth; $('#board-wrap').classList.add('shake');
     banner('Check','red',g.slotIdx<g.slots.length?'Check ends the turn':'');
@@ -1408,6 +1470,7 @@ function applyMove(m){
   const p=g.ctrl[us];
   if(cap){
     g.caps[p].push(cap);
+    g.lost[pcol(cap)].push({...(g.orig[capId]||{c:cap,sq:capSq}),cap});
     const el=PEL.get(capId);
     if(el){ el.classList.add('die'); setTimeout(()=>{el.remove(); if(PEL.get(capId)===el) PEL.delete(capId);},450); }
     const [x,y]=screenOf(capSq); setTimeout(()=>sparks(x,y,pcol(cap)===WHITE?['#fffdf5','#cdbf9f','#f0c060']:['#565d74','#d9b56b','#20242f']),160);
@@ -1557,7 +1620,7 @@ $('#btn-menu').onclick=()=>{
 /* ---------- boot ---------- */
 function boot(){
   // saves from before the 1–4 number deck: rebuild the deck, drop any half-played match
-  if(RUN&&RUN.v!==VER){ RUN.deck=baseDeck(); RUN.v=VER; saveRun(); }
+  if(RUN&&RUN.v!==VER){ if(!(RUN.v>=2)) RUN.deck=baseDeck(); RUN.v=VER; saveRun(); }
   { const m=LS.get('wg.match',null); if(m&&m.v!==VER) LS.del('wg.match'); }
   initWorker();
   show('title');
