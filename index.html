@@ -446,6 +446,11 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .pack.burst{animation:burst .45s cubic-bezier(.5,0,.8,.4) forwards}
 @keyframes burst{0%{transform:none}30%{transform:rotate(-6deg) scale(1.05)}50%{transform:rotate(6deg) scale(1.08)}100%{transform:scale(1.6);opacity:0;filter:brightness(2.5) blur(2px)}}
 @keyframes packin{from{opacity:0;transform:translateY(40px) scale(.6) rotate(-8deg)}}
+.hand.covered .card{filter:none!important}
+.hand.ask{position:relative;cursor:pointer}
+.hand.ask .card{animation:sway 3.8s ease-in-out infinite,askpulse 1.4s ease-in-out infinite}
+@keyframes askpulse{50%{filter:drop-shadow(0 0 10px rgba(240,192,96,.8)) brightness(1.15)}}
+.hand.ask::after{content:'TAP TO REVEAL';position:absolute;left:50%;top:calc(50% + 7px);transform:translate(-50%,-50%);white-space:nowrap;z-index:6;font:800 9px/1 var(--f-display);letter-spacing:.12em;color:#241703;background:var(--gold);padding:6px 9px;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,.5);pointer-events:none}
 @media (max-height:700px){
   .side .slot{--cw:56px}
   .side .deck{--cw:46px}
@@ -1253,7 +1258,7 @@ function startMatch(mode,lvl){
   if(rule==='stacked') COLORS.forEach(c=>d1.push({c,k:'num',n:3}));
   if(rule==='pure') d1=d1.filter(c=>c.k!=='skip'&&c.k!=='rev');
   G={mode,lvl,rule,s,ids,ctrl:[0,1],decks:[{draw:shuffle(d0),disc:[]},{draw:shuffle(d1),disc:[]}],card:[null,null],
-     hand:[[],[]],handSel:-1,combo:0,score:0,target:L?L.goal:0,turnLimit:L?TURNS:0,
+     hand:[[],[]],handSel:-1,reveal:-1,combo:0,score:0,target:L?L.goal:0,turnLimit:L?TURNS:0,
      phase:'init',slots:[],slotIdx:0,used:[],cont:false,pendingEp:-1,blood:false,turnNo:0,myTurns:0,caps:[[],[]],lost:[[],[]],orig,nextId:100,last:null,over:false};
   if(has('saboteur')) for(let i=0;i<3;i++) G.decks[1].draw.splice(rnd(G.decks[1].draw.length+1),0,{c:COLORS[i],k:'skip'});
   if(has('fate')) G.decks[0].draw.push({c:'r',k:'num',n:4});
@@ -1626,6 +1631,7 @@ async function startTurn(goAgain=false){
   }
   g.phase='play'; saveMatch(); renderSides(); renderHand(p);
   if(isAI(p)){ setStatus(p,'Choosing a card…'); await sleep(550); if(G!==g) return; return playCard(p,aiChooseCard(p)); }
+  if(handHidden(p)){ setStatus(p,`<em>Player ${p+1}</em>${inC?' (in check)':''}: tap your cards to reveal them`); return; }
   setStatus(p,(g.mode==='local'?`<em>Player ${p+1}</em>: `:'')+(inC?'<em>Check!</em> Play a card that saves your king':'Pick a card to play'));
 }
 async function refillHand(p){
@@ -1651,23 +1657,33 @@ async function refillHand(p){
   renderSides();
   return skipped;
 }
-function renderHand(p,animNew=0){
+// pass & play: a hand stays face down until its owner taps it on their own turn
+const handHidden=p=>G.mode==='local'&&G.reveal!==p;
+function renderHand(p,animNew=0,flipIn=false){
   const g=G, el=sideEl(p), box=el&&$('.hand',el); if(!box) return;
-  const live=g.phase==='play'&&g.ctrl[g.s.turn]===p&&!isAI(p), inC=live&&inCheck(g.s,g.s.turn);
-  box.classList.toggle('live',live);
-  box.innerHTML=g.hand[p].map((c,i)=>cardHTML(c,`${live&&g.handSel===i?'sel':''} ${inC&&!cardUsable(p,c)?'nope':''}`)).join('');
+  const hidden=handHidden(p), mine=g.phase==='play'&&g.ctrl[g.s.turn]===p&&!isAI(p);
+  const live=mine&&!hidden, inC=live&&inCheck(g.s,g.s.turn);
+  box.classList.toggle('live',live); box.classList.toggle('covered',hidden); box.classList.toggle('ask',hidden&&mine);
+  box.innerHTML=g.hand[p].map((c,i)=>cardHTML(c,`${hidden||flipIn?'down':''} ${live&&g.handSel===i?'sel':''} ${inC&&!cardUsable(p,c)?'nope':''}`)).join('');
   const kids=$$('.card',box);
   kids.forEach((c,i)=>{ c.dataset.i=i; c.style.setProperty('--d',(i*1.3+p*.6)+'s'); });
   for(const c of kids.slice(kids.length-animNew)){
     c.classList.add('down'); c.style.transform='translate(70px,-10px) rotate(14deg)'; c.style.opacity='0';
     c.getBoundingClientRect();
     c.style.transition=`transform ${.42*SPD()}s cubic-bezier(.2,.8,.2,1),opacity .2s`;
-    requestAnimationFrame(()=>{ c.style.transform=''; c.style.opacity=''; setTimeout(()=>{c.classList.remove('down'); c.style.transition='';},120*SPD()); });
+    requestAnimationFrame(()=>{ c.style.transform=''; c.style.opacity=''; setTimeout(()=>{ if(!hidden) c.classList.remove('down'); c.style.transition='';},120*SPD()); });
   }
+  if(flipIn) kids.forEach((c,i)=>setTimeout(()=>{ c.classList.remove('down'); sfx.flip(); },(80+i*110)*SPD()));
+}
+function revealHand(p){
+  const g=G; g.reveal=p; renderHand(p,0,true);
+  const inC=inCheck(g.s,g.s.turn);
+  setStatus(p,`<em>Player ${p+1}</em>: `+(inC?'<em>Check!</em> Play a card that saves your king':'Pick a card to play'));
 }
 function onHandTap(p,e){
   const g=G, c=e.target.closest('.card'); if(!g||!c) return;
   const i=+c.dataset.i, card=g.hand[p][i]; if(!card) return;
+  if(handHidden(p)){ if(g.phase==='play'&&g.ctrl[g.s.turn]===p) revealHand(p); return; }
   if(g.phase!=='play'||g.ctrl[g.s.turn]!==p||isAI(p)){ banner(cardName(card),'nf',describeCard(card)); return; }
   if(c.classList.contains('nope')){ setStatus(p,"That card can't get your king out of check"); sfx.skip(); return; }
   if(g.handSel===i) return playCard(p,i);
@@ -2014,6 +2030,7 @@ function endTurn(){
 function nextTurn(){
   const g=G; if(!g||g.over) return;
   g.turnNo++;
+  if(g.mode==='local'){ g.reveal=-1; renderHand(0); renderHand(1); }
   g.phase='between'; renderAll();
   setTimeout(()=>{ if(G===g) startTurn(); },250);
 }
@@ -2206,7 +2223,7 @@ function viewDeck(p=0){
   $('#m-ok',sh).onclick=closeModal;
   if($('#m-other',sh)) $('#m-other',sh).onclick=()=>viewDeck(1-p);
 }
-$('#btn-gdeck').onclick=()=>{ if(!G) return; sfx.tap(); viewDeck(G.mode==='local'?G.ctrl[G.s.turn]:0); };
+$('#btn-gdeck').onclick=()=>{ if(!G) return; sfx.tap(); const cur=G.ctrl[G.s.turn]; if(G.mode==='local'&&handHidden(cur)){ banner('Cards hidden','nf',`Player ${cur+1}: reveal your hand first`); return; } viewDeck(G.mode==='local'?cur:0); };
 
 /* ---------- debug mode: tap the logo 5 times, or open the page with #debug / ?debug ---------- */
 function setDebug(on){

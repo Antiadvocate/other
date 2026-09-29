@@ -30,7 +30,7 @@ Enhancements stay on a card for the whole run: **Gold** (+$2 when played), **Gla
 ## Modes
 
 - **Run**: 8 AI opponents. Each level gives you 12 turns to reach a score; captures score chips × mult (pawn 1, knight/bishop 3, rook 5, queen 9, × a multiplier jokers raise). Checkmate wins outright. Wins pay cash, $1 per unused turn (max $5) and interest. Spend it on jokers (30 kinds, 5 slots) and deck edits in the Back Room. Missing a target or getting mated ends the run.
-- **Pass & play**: two people on one phone, checkmate only; the top rail is rotated for the player across the table.
+- **Pass & play**: two people on one phone, checkmate only; the top rail is rotated for the player across the table. Hands stay face down: tap your cards on your turn to reveal them, and they flip back the moment your turn ends.
 
 Progress is saved in `localStorage`. The AI runs in a Web Worker; the swirling background is a small WebGL shader.
 
